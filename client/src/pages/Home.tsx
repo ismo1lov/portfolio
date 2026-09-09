@@ -15,12 +15,27 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  ["01", "Intro", "top"],
-  ["02", "About", "about"],
-  ["03", "Skills", "skills"],
-  ["04", "Work", "work"],
-  ["05", "Notes", "notes"],
-  ["06", "Contact", "contact"],
+  ["Intro", "top"],
+  ["About", "about"],
+  ["Skills", "skills"],
+  ["Work", "work"],
+  ["Notes", "notes"],
+  ["Contact", "contact"],
+];
+
+const carouselSlides = [
+  {
+    image: "/manus-storage/greenline-work_f706024f.png",
+    label: "Northstar / 2024",
+    name: <>Northstar<br />in motion.</>,
+    summary: "A travel platform that turns planning into a feeling of forward motion. Strategy, identity, product design and a new digital home.",
+  },
+  {
+    image: "/manus-storage/greenline-hero_6d7418bf.png",
+    label: "Kite / 2024",
+    name: <>Kite<br />takes flight.</>,
+    summary: "A sharper brand world and a high-converting digital experience for a new generation of ambitious products.",
+  },
 ];
 
 const skills = [
@@ -60,9 +75,11 @@ function scrollToSection(id: string) {
 export default function Home() {
   const [introDone, setIntroDone] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     const introTimer = window.setTimeout(() => setIntroDone(true), 1450);
+    const carouselTimer = window.setInterval(() => setActiveSlide((slide) => (slide + 1) % carouselSlides.length), 5200);
     const revealObserver = new IntersectionObserver(
       (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
       { threshold: 0.14 },
@@ -87,6 +104,7 @@ export default function Home() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.clearTimeout(introTimer);
+      window.clearInterval(carouselTimer);
       revealObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
@@ -102,7 +120,7 @@ export default function Home() {
       <div className={`welcome-screen ${introDone ? "is-done" : ""}`} aria-hidden="true">
         <div className="welcome-mark">
           <span className="welcome-kicker">Portfolio / 2024—2025</span>
-          <span className="welcome-word">SARDOR K.</span>
+          <span className="welcome-word">&lt;ismo1lov/&gt;</span>
           <span className="welcome-line" />
         </div>
       </div>
@@ -111,12 +129,12 @@ export default function Home() {
         <nav className="nav" aria-label="Main navigation">
           <button className="logo" onClick={() => handleNav("top")} aria-label="Go to top">
             <span className="logo-dot" />
-            <span>SK / studio</span>
+            <span>&lt;ismo1lov/&gt;</span>
           </button>
           <div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
-            {navItems.map(([number, label, id]) => (
+            {navItems.map(([label, id]) => (
               <a href={`#${id}`} key={id} onClick={() => setMenuOpen(false)}>
-                <span style={{ opacity: 0.45, marginRight: 6 }}>{number}</span>{label}
+                {label}
               </a>
             ))}
           </div>
@@ -134,7 +152,7 @@ export default function Home() {
           </div>
           <div className="grid-overlay" />
           <div className="page-frame hero-copy">
-            <div className="eyebrow reveal">Creative developer / Tashkent, UZ</div>
+            <div className="eyebrow reveal">Fullstack developer / Tashkent, UZ</div>
             <h1 className="hero-title reveal" id="hero-title">Ideas that feel <em className="accent">alive.</em></h1>
             <div className="hero-bottom reveal">
               <p className="hero-intro">Men strategiya, design va kodni birlashtirib, odamlar eslab qoladigan raqamli tajribalar yarataman.</p>
@@ -158,7 +176,7 @@ export default function Home() {
               <div className="about-body reveal">
                 <p>Men <strong>creative developer va designer</strong> sifatida brendlar uchun faqat chiroyli ko‘rinish emas, balki to‘g‘ri his qilinadigan raqamli dunyolar quraman.</p>
                 <p>Har bir loyiha — savol berish, keraksizini olib tashlash va oxirida odamga bir oz ko‘proq qiziq tuyuladigan narsa yaratish jarayoni.</p>
-                <span className="signature">Sardor K. / Independent creative</span>
+                <span className="signature">ismo1lov / Independent fullstack developer</span>
               </div>
             </div>
           </div>
@@ -189,18 +207,21 @@ export default function Home() {
               <h2 className="work-title">A few things<br />I’ve made <em>recently.</em></h2>
               <p className="work-caption">Turli sohalardagi loyihalar, bir xil tamoyil: aniq fikr, yaxshi ritm, keraksiz shovqinsiz.</p>
             </div>
-            <article className="work-feature reveal">
+            <article className="work-feature" key={activeSlide}>
               <div className="work-image">
-                <img src="/manus-storage/greenline-work_f706024f.png" alt="Charcoal and green abstract art from the Northstar case study" />
-                <span className="work-image-label">Northstar / 2024</span>
+                <img src={carouselSlides[activeSlide].image} alt={`${carouselSlides[activeSlide].label} case study artwork`} />
+                <span className="work-image-label">{carouselSlides[activeSlide].label}</span>
               </div>
               <div className="work-detail">
                 <div>
                   <div className="work-meta"><span>Featured project</span><span>01 / 04</span></div>
-                  <h3 className="work-name">Northstar<br />in motion.</h3>
-                  <p className="work-summary">A travel platform that turns planning into a feeling of forward motion. Strategy, identity, product design and a new digital home.</p>
+                  <h3 className="work-name">{carouselSlides[activeSlide].name}</h3>
+                  <p className="work-summary">{carouselSlides[activeSlide].summary}</p>
                 </div>
                 <a className="work-link" href="mailto:salom@skstudio.uz?subject=Northstar%20case%20study">View case study <ArrowUpRight size={16} /></a>
+                <div className="carousel-controls" aria-label="Portfolio carousel controls">
+                  {carouselSlides.map((slide, index) => <button key={slide.label} className={index === activeSlide ? "is-active" : ""} onClick={() => setActiveSlide(index)} aria-label={`Show ${slide.label}`} />)}
+                </div>
               </div>
             </article>
             <div className="work-list reveal">
@@ -230,7 +251,7 @@ export default function Home() {
               <p className="contact-side reveal">Yangi loyiha, hamkorlik yoki shunchaki salom aytish uchun yozing. Men har doim yaxshi savolga vaqt topaman.</p>
             </div>
             <a className="contact-button reveal" href="mailto:salom@skstudio.uz">salom@skstudio.uz <ArrowUpRight size={16} /></a>
-            <footer className="footer"><span>© 2025 Sardor K. / Made with intent.</span><div className="footer-links"><a href="https://www.instagram.com" target="_blank" rel="noreferrer">Instagram</a><a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a><a href="#top">Back to top <ArrowRight size={12} style={{ verticalAlign: "middle" }} /></a></div></footer>
+            <footer className="footer"><span>© 2025 &lt;ismo1lov/&gt; / Made with intent.</span><div className="footer-links"><a href="https://www.instagram.com" target="_blank" rel="noreferrer">Instagram</a><a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a><a href="#top">Back to top <ArrowRight size={12} style={{ verticalAlign: "middle" }} /></a></div></footer>
           </div>
         </section>
       </main>

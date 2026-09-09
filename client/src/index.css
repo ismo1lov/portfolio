@@ -90,7 +90,7 @@ button { font: inherit; }
 .hero-art:after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(242,240,233,1) 0%, rgba(242,240,233,.94) 34%, rgba(242,240,233,.12) 69%, rgba(242,240,233,.05) 100%); }
 .hero-art img { width: 100%; height: 100%; object-fit: cover; object-position: center; mix-blend-mode: multiply; opacity: .92; }
 .grid-overlay { position: absolute; inset: 0; z-index: -1; opacity: .25; background-size: 100% 100%, 100% 100%; background-image: linear-gradient(to right, transparent 0, transparent calc(50% - .5px), rgba(32,34,31,.12) 50%, transparent calc(50% + .5px)), linear-gradient(to bottom, transparent 0, transparent calc(74% - .5px), rgba(32,34,31,.12) 75%, transparent calc(75% + .5px)); }
-.hero-copy { width: min(100%, 910px); }
+.hero-copy { width: min(100%, 910px); transform: translateX(-3.5vw); }
 .eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; color: var(--ink-soft); font: 500 11px/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; }
 .eyebrow:before { content: ''; width: 25px; height: 1px; background: var(--acid-deep); }
 .hero-title { max-width: 890px; margin: 0; font: 700 clamp(64px, 11vw, 158px)/.83 var(--display); letter-spacing: -.095em; }
@@ -145,7 +145,8 @@ button { font: inherit; }
 .work-title { max-width: 650px; margin: 0; font: 600 clamp(42px, 6.5vw, 90px)/.9 var(--display); letter-spacing: -.09em; }
 .work-title em { color: var(--acid-deep); font-style: normal; }
 .work-caption { max-width: 260px; margin: 0 0 4px; color: var(--muted); font-size: 14px; line-height: 1.5; }
-.work-feature { display: grid; grid-template-columns: 1.12fr .88fr; min-height: 620px; background: var(--ink); color: var(--paper); }
+.work-feature { display: grid; grid-template-columns: 1.12fr .88fr; min-height: 620px; background: var(--ink); color: var(--paper); animation: carouselIn .65s var(--ease-out); }
+@keyframes carouselIn { from { opacity: .25; transform: translateY(12px) scale(.992); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .work-image { position: relative; min-height: 620px; overflow: hidden; }
 .work-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease-out); }
 .work-feature:hover .work-image img { transform: scale(1.045); }
@@ -158,6 +159,9 @@ button { font: inherit; }
 .work-link { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; color: var(--acid); font: 500 11px/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; }
 .work-link svg { transition: transform .2s var(--ease-out); }
 .work-link:hover svg { transform: translate(3px,-3px); }
+.carousel-controls { display: flex; gap: 8px; align-items: center; margin-top: 26px; }
+.carousel-controls button { width: 32px; height: 3px; padding: 0; border: 0; background: rgba(242,240,233,.25); transition: width .3s var(--ease-out), background .25s ease; }
+.carousel-controls button.is-active { width: 58px; background: var(--acid); }
 .work-list { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; margin-top: 1px; background: var(--line); }
 .work-mini { position: relative; min-height: 194px; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; background: var(--paper-bright); transition: background .25s ease, color .25s ease; }
 .work-mini:hover { background: var(--acid); }
@@ -197,6 +201,7 @@ button { font: inherit; }
   .nav-cta { display: none; }
   .nav-toggle { display: block; }
   .hero { padding: 130px 0 46px; min-height: 800px; }
+  .hero-copy { transform: translateX(0); }
   .hero-art img { object-position: 61% center; }
   .hero-art:after { background: linear-gradient(90deg, rgba(242,240,233,1) 0%, rgba(242,240,233,.83) 50%, rgba(242,240,233,.18) 100%); }
   .hero-title { font-size: clamp(58px, 13vw, 110px); }
@@ -222,6 +227,7 @@ button { font: inherit; }
 @media (max-width: 520px) {
   .page-frame, .section-frame, .nav { width: calc(100% - 28px); }
   .hero { min-height: 720px; padding-bottom: 35px; }
+  .hero-copy { transform: translateX(-2px); }
   .hero-title { font-size: 62px; }
   .hero-bottom { display: block; margin-top: 38px; }
   .hero-note { margin-top: 24px; }

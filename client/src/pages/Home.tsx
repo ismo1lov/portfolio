@@ -76,6 +76,7 @@ export default function Home() {
   const [introDone, setIntroDone] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const introTimer = window.setTimeout(() => setIntroDone(true), 1450);
@@ -96,6 +97,7 @@ export default function Home() {
       ticking = false;
     };
     const onScroll = () => {
+      setScrolled(window.scrollY > 70);
       if (!ticking) {
         window.requestAnimationFrame(parallax);
         ticking = true;
@@ -126,7 +128,7 @@ export default function Home() {
       </div>
 
       <header className="nav-wrap">
-        <nav className="nav" aria-label="Main navigation">
+        <nav className={`nav ${scrolled ? "is-scrolled" : "is-hero"}`} aria-label="Main navigation">
           <button className="logo" onClick={() => handleNav("top")} aria-label="Go to top">
             <span className="logo-dot" />
             <span>&lt;ismo1lov/&gt;</span>
@@ -148,12 +150,12 @@ export default function Home() {
       <main>
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-art" data-parallax="0.035">
-            <img src="/manus-storage/greenline-hero_6d7418bf.png" alt="Abstract lime and charcoal geometric artwork" />
+            <img src="/manus-storage/ismo1lov-dev-hero_24dfba37.png" alt="Abstract fullstack developer network and code visual" />
           </div>
           <div className="grid-overlay" />
           <div className="page-frame hero-copy">
             <div className="eyebrow reveal">Fullstack developer / Tashkent, UZ</div>
-            <h1 className="hero-title reveal" id="hero-title">Ideas that feel <em className="accent">alive.</em></h1>
+            <h1 className="hero-title reveal" id="hero-title">Code that feels <em className="accent">alive.</em></h1>
             <div className="hero-bottom reveal">
               <p className="hero-intro">Men strategiya, design va kodni birlashtirib, odamlar eslab qoladigan raqamli tajribalar yarataman.</p>
               <div className="hero-note"><span className="pulse" /> Available for select projects</div>
@@ -164,7 +166,7 @@ export default function Home() {
 
         <div className="ticker" aria-label="Services ticker">
           <div className="ticker-track">
-            {["Digital experiences", "Brand systems", "Creative development", "Interaction design", "Digital experiences", "Brand systems", "Creative development", "Interaction design"].map((item, index) => <span className="ticker-item" key={`${item}-${index}`}>{item}</span>)}
+            {["Fullstack development", "Brand systems", "Backend architecture", "Interaction design", "React / Node.js", "Cloud-ready builds", "Fullstack development", "Brand systems", "Backend architecture", "Interaction design", "React / Node.js", "Cloud-ready builds"].map((item, index) => <span className="ticker-item" key={`${item}-${index}`}>{item}</span>)}
           </div>
         </div>
 

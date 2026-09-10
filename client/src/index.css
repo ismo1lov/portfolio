@@ -69,10 +69,13 @@ button { font: inherit; }
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
   width: min(100% - 40px, 1380px); margin: 0 auto; padding: 17px 22px 17px 24px;
   border: 1px solid rgba(32,34,31,.12); border-radius: 999px;
-  background: rgba(248,247,242,.34); border-color: rgba(255,255,255,.56); backdrop-filter: blur(26px) saturate(155%); -webkit-backdrop-filter: blur(26px) saturate(155%);
-  box-shadow: 0 10px 26px rgba(32,34,31,.04);
+  position: relative; overflow: hidden; isolation: isolate;
+  background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(255,255,255,.08)); border-color: rgba(255,255,255,.42); backdrop-filter: blur(32px) saturate(180%); -webkit-backdrop-filter: blur(32px) saturate(180%);
+  box-shadow: 0 18px 48px rgba(0,0,0,.12), inset 0 1px 0 rgba(255,255,255,.42), inset 0 -1px 0 rgba(255,255,255,.08);
 }
-.nav.is-hero { background: rgba(16,22,19,.42); border-color: rgba(255,255,255,.22); color: var(--paper); box-shadow: 0 14px 34px rgba(0,0,0,.12); }
+.nav:before { content: ''; position: absolute; inset: 1px; z-index: -1; border-radius: inherit; pointer-events: none; background: linear-gradient(110deg, rgba(255,255,255,.2), transparent 38%, rgba(184,242,48,.05) 72%, rgba(255,255,255,.08)); }
+.nav > * { position: relative; z-index: 1; }
+.nav.is-hero { background: linear-gradient(135deg, rgba(16,22,19,.55), rgba(16,22,19,.24)); border-color: rgba(255,255,255,.27); color: var(--paper); box-shadow: 0 18px 52px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 0 rgba(255,255,255,.05); }
 .nav.is-hero .nav-links { color: rgba(242,240,233,.74); }
 .nav.is-hero .nav-links a:hover { color: var(--paper); }
 .nav.is-hero .nav-cta { background: var(--acid); color: var(--ink); }

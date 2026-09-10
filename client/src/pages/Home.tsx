@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import LocomotiveScroll from "locomotive-scroll";
+import "locomotive-scroll/dist/locomotive-scroll.css";
+import CurvedLoop from "../components/CurvedLoop";
 import {
   ArrowDown,
   ArrowRight,
@@ -6,16 +9,22 @@ import {
   Blocks,
   Code2,
   Command,
+  Facebook,
+  Github,
+  Instagram,
   Layers3,
+  Linkedin,
   Menu,
   MoveUpRight,
   PenTool,
+  Send,
   Sparkles,
+  Twitter,
   X,
 } from "lucide-react";
 
 const navItems = [
-  ["Intro", "top"],
+  ["Home", "top"],
   ["About", "about"],
   ["Skills", "skills"],
   ["Work", "work"],
@@ -23,15 +32,17 @@ const navItems = [
   ["Contact", "contact"],
 ];
 
+const introWord = "ismo1lov";
+
 const carouselSlides = [
   {
-    image: "/manus-storage/ismo1lov-dev-hero_24dfba37.png",
+    image: "/work-stackline.svg",
     label: "Stackline / 2025",
     name: <>Stackline<br />in motion.</>,
     summary: "A fullstack product system where robust backend architecture meets a calm, high-converting interface. Strategy, product design and engineering.",
   },
   {
-    image: "/manus-storage/ismo1lov-stackline-work_850b0124.png",
+    image: "/work-apios.svg",
     label: "APIOS / 2024",
     name: <>APIs that<br />scale.</>,
     summary: "A resilient service layer and calm data experience for a product built to grow from first user to full team.",
@@ -43,21 +54,21 @@ const skills = [
     number: "01",
     title: "Digital direction",
     icon: <Command />,
-    text: "Brendning ovozini, tizimini va raqamli tajribasini bir nuqtaga yig‘aman.",
+    text: "I align a brand’s voice, system, and digital experience into one clear point of view.",
     tags: ["Art direction", "Brand systems", "Strategy"],
   },
   {
     number: "02",
     title: "Interface design",
     icon: <PenTool />,
-    text: "Murakkab mahsulotlarni tabiiy, tushunarli va o‘ziga xos interfeyslarga aylantiraman.",
+    text: "I turn complex products into natural, clear, and distinctive interfaces.",
     tags: ["UX / UI", "Prototyping", "Design systems"],
   },
   {
     number: "03",
     title: "Creative code",
     icon: <Code2 />,
-    text: "G‘oyani ekranda jonlantiradigan, tez va sezgir front-end tajribalarni quraman.",
+    text: "I craft fast, responsive front-end experiences that bring an idea to life on screen.",
     tags: ["React", "Motion", "Creative dev"],
   },
 ];
@@ -68,74 +79,129 @@ const miniWork = [
   ["04 / 2023", "MELA", "Product direction"],
 ];
 
-function scrollToSection(id: string) {
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+const tickerServices = ["Fullstack development", "Brand systems", "Backend architecture", "Interaction design", "React / Node.js", "Cloud-ready builds"];
+
+function isDarkBackground(color: string) {
+  const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+  if (!match) return false;
+  const [, r = "0", g = "0", b = "0", a = "1"] = match;
+  if (Number(a) === 0) return false;
+  const luminance = 0.299 * Number(r) + 0.587 * Number(g) + 0.114 * Number(b);
+  return luminance < 140;
 }
 
 export default function Home() {
-  const [introDone, setIntroDone] = useState(false);
+  const [introState, setIntroState] = useState<"enter" | "exit" | "done">("enter");
+  const [entered, setEntered] = useState(false);
+  const [revisited] = useState(() => !!sessionStorage.getItem("intro-shown"));
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSlide, setActiveSlide] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [navDark, setNavDark] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const scrollRef = useRef<LocomotiveScroll | null>(null);
 
   useEffect(() => {
-    const introTimer = window.setTimeout(() => setIntroDone(true), 1450);
-    const carouselTimer = window.setInterval(() => setActiveSlide((slide) => (slide + 1) % carouselSlides.length), 5200);
+    const locomotive = new LocomotiveScroll({
+      lenisOptions: {
+        smoothWheel: true,
+        lerp: 0.1,
+      },
+    });
+    scrollRef.current = locomotive;
+
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+    locomotive.scrollTo(0, { duration: 0 });
+
+    const isRevisit = sessionStorage.getItem("intro-shown") === "true" || revisited;
+    sessionStorage.setItem("intro-shown", "true");
+
+    let exitTimer: number | undefined;
+    let doneTimer: number | undefined;
+    let enterRaf: number | undefined;
+    if (!isRevisit) {
+      exitTimer = window.setTimeout(() => setIntroState("exit"), 1700);
+      doneTimer = window.setTimeout(() => setIntroState("done"), 2550);
+      enterRaf = window.requestAnimationFrame(() => setEntered(true));
+    }
     const revealObserver = new IntersectionObserver(
       (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
       { threshold: 0.14 },
     );
     document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
 
-    let ticking = false;
-    const parallax = () => {
-      const scrollY = window.scrollY;
-      document.querySelectorAll("[data-parallax]").forEach((element) => {
-        const speed = Number(element.getAttribute("data-parallax")) || 0.08;
-        (element as HTMLElement).style.transform = `translate3d(0, ${scrollY * speed * -1}px, 0)`;
-      });
-      ticking = false;
-    };
     const onScroll = () => {
       setScrolled(window.scrollY > 70);
-      if (!ticking) {
-        window.requestAnimationFrame(parallax);
-        ticking = true;
-      }
+      let dark = false;
+      document.querySelectorAll<HTMLElement>("section, .work-feature").forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= 84 && rect.bottom >= 84) {
+          dark = isDarkBackground(getComputedStyle(element).backgroundColor);
+        }
+      });
+      setNavDark(dark);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      window.clearTimeout(introTimer);
-      window.clearInterval(carouselTimer);
+      if (exitTimer) window.clearTimeout(exitTimer);
+      if (doneTimer) window.clearTimeout(doneTimer);
+      if (enterRaf) window.cancelAnimationFrame(enterRaf);
       revealObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
+      locomotive.destroy();
+      scrollRef.current = null;
     };
   }, []);
 
   const handleNav = (id: string) => {
     setMenuOpen(false);
-    scrollToSection(id);
+    if (id === "top") {
+      scrollRef.current?.scrollTo(0, { duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 4) });
+    } else {
+      scrollRef.current?.scrollTo(`#${id}`, {
+        offset: 0,
+        duration: 1.2,
+        easing: (t) => 1 - Math.pow(1 - t, 4),
+      });
+    }
+  };
+
+  const handleContactSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitted(true);
   };
 
   return (
-    <div className="site-shell" id="top">
-      <div className={`welcome-screen ${introDone ? "is-done" : ""}`} aria-hidden="true">
-        <div className="welcome-mark">
-          <span className="welcome-kicker">Portfolio / 2024—2025</span>
-          <span className="welcome-word">&lt;ismo1lov/&gt;</span>
-          <span className="welcome-line" />
+<div className="site-shell" id="top">
+      {!revisited && (
+        <div className={`welcome-screen ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""}`} aria-hidden="true">
+          <div className="welcome-mark">
+            <span className="welcome-kicker">Portfolio / 2024—2025</span>
+            <span className="welcome-word-frame">
+              <span className="welcome-word" aria-label={introWord}>
+                {Array.from(introWord).map((char, index) => (
+                  <span className="welcome-char" style={{ animationDelay: `${(0.15 + index * 0.045).toFixed(2)}s` }} key={index}>
+                    {char === " " ? "\u00A0" : char}
+                  </span>
+                ))}
+              </span>
+              <span className="welcome-ring" aria-hidden="true"><span className="welcome-ring-l">&lt;</span><span className="welcome-ring-r">&gt;</span></span>
+            </span>
+            <span className="welcome-line" />
+          </div>
         </div>
-      </div>
+      )}
 
       <header className="nav-wrap">
-        <nav className={`nav ${scrolled ? "is-scrolled" : "is-hero"}`} aria-label="Main navigation">
+        <nav className={`nav ${scrolled ? "is-scrolled" : "is-hero"} ${navDark ? "is-dark-section" : ""}`} aria-label="Main navigation">
           <button className="logo" onClick={() => handleNav("top")} aria-label="Go to top">
-            <span className="logo-dot" />
-            <span>&lt;ismo1lov/&gt;</span>
+            <span className="logo-mark"><i className="logo-sym">&lt;</i>ismo<i className="logo-one">1</i>lov<i className="logo-sym">&gt;</i></span>
           </button>
           <div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
             {navItems.map(([label, id]) => (
-              <a href={`#${id}`} key={id} onClick={() => setMenuOpen(false)}>
+              <a href={`#${id}`} key={id} onClick={(event) => { event.preventDefault(); handleNav(id); }}>
                 {label}
               </a>
             ))}
@@ -149,36 +215,36 @@ export default function Home() {
 
       <main>
         <section className="hero" aria-labelledby="hero-title">
-          <div className="hero-art" data-parallax="0.035">
-            <img src="/manus-storage/ismo1lov-dev-hero_24dfba37.png" alt="Abstract fullstack developer network and code visual" />
-          </div>
-          <div className="grid-overlay" />
+          <div className="hero-art" aria-hidden="true" />
           <div className="page-frame hero-copy">
-            <div className="eyebrow reveal">Fullstack developer / Tashkent, UZ</div>
-            <h1 className="hero-title reveal" id="hero-title">Code that feels <em className="accent">alive.</em></h1>
-            <div className="hero-bottom reveal">
-              <p className="hero-intro">Men strategiya, design va kodni birlashtirib, odamlar eslab qoladigan raqamli tajribalar yarataman.</p>
-              <div className="hero-note"><span className="pulse" /> Available for select projects</div>
+            <div className="eyebrow reveal">Fullstack developer</div>
+            <h1 className="hero-title reveal" data-delay="1" id="hero-title">Code that feels <em className="accent">alive.</em></h1>
+            <div className="hero-bottom reveal" data-delay="2">
+              <p className="hero-intro">I combine strategy, design, and code to craft digital experiences people remember.</p>
             </div>
           </div>
           <div className="scroll-cue"><span /> Scroll to explore <ArrowDown size={13} /></div>
         </section>
 
-        <div className="ticker" aria-label="Services ticker">
-          <div className="ticker-track">
-            {["Fullstack development", "Brand systems", "Backend architecture", "Interaction design", "React / Node.js", "Cloud-ready builds", "Fullstack development", "Brand systems", "Backend architecture", "Interaction design", "React / Node.js", "Cloud-ready builds"].map((item, index) => <span className="ticker-item" key={`${item}-${index}`}>{item}</span>)}
-          </div>
+        <div className="ticker reveal" aria-label="Services ticker">
+          <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="left" interactive={false} />
         </div>
 
-        <section className="section" id="about">
+        <section className="section section-about" id="about">
           <div className="section-frame">
-            <div className="section-label reveal"><b>02</b> / A little context</div>
+            <div className="section-label reveal">A little context</div>
             <div className="about-grid">
-              <h2 className="about-title reveal">Good work sits<br />between <em>logic</em><br />and instinct.</h2>
-              <div className="about-body reveal">
-                <p>Men <strong>creative developer va designer</strong> sifatida brendlar uchun faqat chiroyli ko‘rinish emas, balki to‘g‘ri his qilinadigan raqamli dunyolar quraman.</p>
-                <p>Har bir loyiha — savol berish, keraksizini olib tashlash va oxirida odamga bir oz ko‘proq qiziq tuyuladigan narsa yaratish jarayoni.</p>
-                <span className="signature">ismo1lov / Independent fullstack developer</span>
+              <div className="about-content">
+                <h2 className="about-title reveal" data-reveal="left">Good work sits<br />between <em>logic</em><br />and instinct.</h2>
+                <div className="about-body reveal" data-delay="1">
+                  <p>As a <strong>creative developer and designer</strong>, I build digital worlds for brands that don’t just look pretty — they feel right.</p>
+                  <p>Every project is a process of asking questions, stripping away what’s unnecessary, and ending up with something that feels just a little more interesting.</p>
+                </div>
+              </div>
+              <div className="about-image reveal" data-reveal="scale">
+                <img src="/about-image.jpg" alt="Abstract developer portrait" />
+                <a className="about-corner about-corner-top" href="mailto:salom@skstudio.uz" aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
+                <a className="about-corner about-corner-bottom" href="mailto:salom@skstudio.uz?subject=Download%20CV" aria-label="Download CV"><span className="about-corner-label">Download CV</span><ArrowRight size={16} /></a>
               </div>
             </div>
           </div>
@@ -186,11 +252,11 @@ export default function Home() {
 
         <section className="section section-dark" id="skills">
           <div className="section-frame">
-            <div className="section-label reveal"><b>03</b> / What I bring</div>
-            <div className="skills-grid reveal">
-              {skills.map((skill) => (
-                <article className="skill-card" key={skill.number}>
-                  <div className="skill-icon"><span className="skill-index">{skill.number}</span>{skill.icon}</div>
+            <div className="section-label reveal">What I bring</div>
+            <div className="skills-grid">
+              {skills.map((skill, index) => (
+                <article className="skill-card reveal" data-reveal="scale" data-delay={index} key={skill.number}>
+                  <div className="skill-icon">{skill.icon}</div>
                   <div>
                     <h2 className="skill-title">{skill.title}</h2>
                     <p className="skill-desc">{skill.text}</p>
@@ -204,59 +270,102 @@ export default function Home() {
 
         <section className="section" id="work">
           <div className="section-frame">
-            <div className="section-label reveal"><b>04</b> / Selected work</div>
+            <div className="section-label reveal">Selected work</div>
             <div className="work-header reveal">
               <h2 className="work-title">A few things<br />I’ve made <em>recently.</em></h2>
-              <p className="work-caption">Turli sohalardagi loyihalar, bir xil tamoyil: aniq fikr, yaxshi ritm, keraksiz shovqinsiz.</p>
+              <p className="work-caption">Projects across different fields, one shared principle: clear thinking, good rhythm, no unnecessary noise.</p>
             </div>
-            <article className="work-feature" key={activeSlide}>
-              <div className="work-image">
-                <img src={carouselSlides[activeSlide].image} alt={`${carouselSlides[activeSlide].label} case study artwork`} />
-                <div className="work-code-card" aria-hidden="true"><span className="code-dot" /><span className="code-dot" /><span className="code-dot" /><div className="code-lines"><i /><i /><i /><i /><i /></div><b>ship / stable / 99.9%</b></div>
-                <span className="work-image-label">{carouselSlides[activeSlide].label}</span>
-              </div>
-              <div className="work-detail">
-                <div>
-                  <div className="work-meta"><span>Featured project</span><span>01 / 04</span></div>
-                  <h3 className="work-name">{carouselSlides[activeSlide].name}</h3>
-                  <p className="work-summary">{carouselSlides[activeSlide].summary}</p>
+            <div className="reveal" data-reveal="scale">
+              <article className="work-feature">
+                <div className="work-image">
+                  <img src={carouselSlides[0].image} alt={`${carouselSlides[0].label} case study artwork`} />
+                  <div className="work-code-card" aria-hidden="true"><span className="code-dot" /><span className="code-dot" /><span className="code-dot" /><div className="code-lines"><i /><i /><i /><i /><i /></div><b>ship / stable / 99.9%</b></div>
+                  <span className="work-image-label">{carouselSlides[0].label}</span>
                 </div>
-                <a className="work-link" href="mailto:salom@skstudio.uz?subject=Stackline%20case%20study">View case study <ArrowUpRight size={16} /></a>
-                <div className="carousel-controls" aria-label="Portfolio carousel controls">
-                  {carouselSlides.map((slide, index) => <button key={slide.label} className={index === activeSlide ? "is-active" : ""} onClick={() => setActiveSlide(index)} aria-label={`Show ${slide.label}`} />)}
+                <div className="work-detail">
+                  <div>
+                    <div className="work-meta"><span>Featured project</span></div>
+                    <h3 className="work-name">{carouselSlides[0].name}</h3>
+                    <p className="work-summary">{carouselSlides[0].summary}</p>
+                  </div>
+                  <a className="work-link" href="mailto:salom@skstudio.uz?subject=Stackline%20case%20study">View case study <ArrowUpRight size={16} /></a>
                 </div>
-              </div>
-            </article>
-            <div className="work-list reveal">
-              {miniWork.map(([date, title, kind]) => <a className="work-mini" href="mailto:salom@skstudio.uz" key={title}><small>{date}</small><h3>{title}</h3><p>{kind} <ArrowUpRight size={13} style={{ verticalAlign: "middle" }} /></p></a>)}
+              </article>
+            </div>
+            <div className="work-list">
+              {miniWork.map(([date, title, kind], index) => <a className="work-mini reveal" data-reveal="up" data-delay={index} href="mailto:salom@skstudio.uz" key={title}><small>{date}</small><h3>{title}</h3><p>{kind} <ArrowUpRight size={13} style={{ verticalAlign: "middle" }} /></p></a>)}
             </div>
           </div>
         </section>
 
         <section className="section section-acid" id="notes">
           <div className="section-frame">
-            <div className="section-label reveal"><b>05</b> / A note from the process</div>
-            <div className="quote-wrap">
-              <h2 className="quote-title reveal"><span className="quote-mark">“</span>Make it simple.<br />Make it matter.</h2>
-              <blockquote className="reveal">
-                <p className="quote">“Ajoyib dizayn dekoratsiya emas. U odamga keyingi qadamni ishonch bilan ko‘rsatadigan kichik signal.”</p>
+            <div className="section-label reveal">A note from the process</div>
+            <div className="note-wrap">
+              <span className="note-mark reveal" data-reveal="scale" aria-hidden="true">“</span>
+              <blockquote className="note-quote reveal" data-reveal="fade">
+                <p>Beautiful design is not decoration — it’s the <em>quiet signal</em> that shows people their next step with confidence.</p>
                 <cite>— A working principle, not a slogan</cite>
               </blockquote>
             </div>
           </div>
         </section>
 
+        <div className="ticker ticker-dark reveal" aria-label="Services ticker">
+          <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="right" interactive={false} />
+        </div>
+
         <section className="contact" id="contact">
           <div className="section-frame">
-            <div className="section-label reveal"><b>06</b> / Start a conversation</div>
+            <div className="section-label reveal">Start a conversation</div>
             <div className="contact-top">
-              <h2 className="contact-title reveal">Have a good<br /><span>idea?</span></h2>
-              <p className="contact-side reveal">Yangi loyiha, hamkorlik yoki shunchaki salom aytish uchun yozing. Men har doim yaxshi savolga vaqt topaman.</p>
+              <h2 className="contact-title reveal" data-reveal="scale">Have a good<br /><span>idea?</span></h2>
+              <form className="contact-form reveal" data-reveal="right" onSubmit={handleContactSubmit}>
+                <div className="contact-field">
+                  <label htmlFor="contact-name">Your name</label>
+                  <input id="contact-name" name="name" type="text" placeholder="Jane Doe" autoComplete="name" required />
+                </div>
+                <div className="contact-field">
+                  <label htmlFor="contact-email">Email</label>
+                  <input id="contact-email" name="email" type="email" placeholder="you@studio.uz" autoComplete="email" required />
+                </div>
+                <div className="contact-field">
+                  <label htmlFor="contact-message">Message</label>
+                  <textarea id="contact-message" name="message" rows={4} placeholder="Tell me about your project…" required />
+                </div>
+                {submitted ? (
+                  <p className="contact-sent" role="status"><span className="contact-sent-dot" /> Thanks — I’ll get back to you soon.</p>
+                ) : (
+                  <button className="contact-submit" type="submit">Send message <ArrowUpRight size={15} /></button>
+                )}
+              </form>
             </div>
-            <a className="contact-button reveal" href="mailto:salom@skstudio.uz">salom@skstudio.uz <ArrowUpRight size={16} /></a>
-            <footer className="footer"><span>© 2025 &lt;ismo1lov/&gt; / Made with intent.</span><div className="footer-links"><a href="https://www.instagram.com" target="_blank" rel="noreferrer">Instagram</a><a href="https://www.linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a><a href="#top">Back to top <ArrowRight size={12} style={{ verticalAlign: "middle" }} /></a></div></footer>
           </div>
         </section>
+        <footer className="site-footer reveal" data-reveal="fade">
+          <div className="section-frame">
+            <div className="footer-main">
+              <div className="footer-brand">
+                <a className="footer-logo" href="#top" onClick={(event) => { event.preventDefault(); handleNav("top"); }}>
+                  <span className="logo-mark"><i className="logo-sym">&lt;</i>ismo<i className="logo-one">1</i>lov<i className="logo-sym">&gt;</i></span>
+                </a>
+                <p className="footer-tagline">Fullstack developer crafting calm, deliberate digital products. Let’s build something good together.</p>
+              </div>
+              <div className="footer-socials" aria-label="Social media links">
+                <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={20} /></a>
+                <a href="https://t.me/" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={20} /></a>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
+                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
+                <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={20} /></a>
+                <a href="https://x.com/" target="_blank" rel="noreferrer" aria-label="X"><Twitter size={20} /></a>
+              </div>
+            </div>
+            <div className="footer-bottom">
+              <span>© 2026 &lt;ismo1lov/&gt; / Made with intent.</span>
+              <a className="footer-back" href="#top" onClick={(event) => { event.preventDefault(); handleNav("top"); }}>Back to top <ArrowUpRight size={13} /></a>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   );

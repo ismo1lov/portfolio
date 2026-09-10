@@ -64,7 +64,7 @@ button { font: inherit; }
   transform: translateY(0);
   animation: welcomeDrop .9s var(--ease-out) .05s forwards;
 }
-.welcome-screen.is-exit { animation: none; transform: translateY(-100%); opacity: 1; }
+.welcome-screen.is-exit { animation: welcomeLift .9s var(--ease-out) forwards; pointer-events: none; }
 .welcome-screen.is-done { visibility: hidden; pointer-events: none; }
 .welcome-screen::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, transparent, rgba(184, 242, 48, .55), transparent); }
 .welcome-mark { position: relative; display: grid; gap: 18px; text-align: center; }
@@ -84,6 +84,7 @@ button { font: inherit; }
 @keyframes ringSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes ringSpinRev { to { transform: translateY(-50%) rotate(-360deg); } }
 @keyframes welcomeDrop { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+@keyframes welcomeLift { from { transform: translateY(0); } to { transform: translateY(-100%); } }
 
 .nav-wrap { position: fixed; inset: 0 0 auto; z-index: 80; padding: 20px 0; }
 .nav { 
@@ -119,6 +120,18 @@ button { font: inherit; }
 .nav-cta:hover, .button-dark:hover, .button-acid:hover { transform: translateY(-2px); }
 .nav-cta:active, .button-dark:active, .button-acid:active { transform: scale(.97); }
 .nav-toggle { display: none; border: 0; background: transparent; color: var(--ink); padding: 4px; }
+
+/* Keep every interactive surface responsive, including icon-only links. */
+a, button, input, textarea, .skill-card, .work-mini, .about-corner, .work-feature, .footer-socials a {
+  transition-timing-function: var(--ease-out);
+}
+.logo, .nav-toggle, .footer-logo, .footer-back, .work-link, .about-corner, .work-mini, .footer-socials a {
+  transition: transform .5s var(--ease-out), color .5s ease, background-color .5s ease, border-color .5s ease, opacity .5s ease;
+}
+.logo:hover { transform: translateY(-2px); }
+.nav-toggle:hover { transform: rotate(-6deg) scale(1.06); }
+.work-mini:hover { transform: translateY(-5px); }
+.footer-back:hover { transform: translateX(4px); }
 
 .hero { position: relative; height: 100svh; min-height: 100svh; display: flex; align-items: center; padding: 150px 0 58px; isolation: isolate; overflow: hidden; }
 .hero { background: #101613; color: var(--paper); }
@@ -276,19 +289,20 @@ button { font: inherit; }
 .footer-back { display: inline-flex; align-items: center; gap: 8px; color: var(--paper); text-decoration: none; transition: color .5s ease; }
 .footer-back:hover { color: var(--acid); }
 
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity .5s var(--ease-out), transform .5s var(--ease-out); }
+.reveal { opacity: 0; transform: translate3d(0, 36px, 0); transition: opacity .8s var(--ease-out), transform .8s var(--ease-out); will-change: opacity, transform; }
 .reveal[data-reveal="left"] { transform: translateX(-44px); }
 .reveal[data-reveal="right"] { transform: translateX(44px); }
 .reveal[data-reveal="scale"] { transform: translateY(14px) scale(.92); }
 .reveal[data-reveal="fade"] { transform: none; }
+.reveal[data-delay="0"] { transition-delay: 0s; }
 .reveal[data-delay="1"] { transition-delay: .1s; }
 .reveal[data-delay="2"] { transition-delay: .2s; }
 .reveal[data-delay="3"] { transition-delay: .3s; }
 .reveal[data-delay="4"] { transition-delay: .4s; }
 .reveal[data-delay="5"] { transition-delay: .5s; }
 .reveal.is-visible { opacity: 1; transform: none; }
-.skill-card.reveal { transition: background .5s var(--ease-out), color .5s var(--ease-out), opacity .5s var(--ease-out), transform .5s var(--ease-out); }
-.work-mini.reveal { transition: background .5s ease, color .5s ease, opacity .5s var(--ease-out), transform .5s var(--ease-out); }
+.skill-card.reveal { transition: background .5s var(--ease-out), color .5s var(--ease-out), opacity .8s var(--ease-out), transform .8s var(--ease-out); }
+.work-mini.reveal { transition: background .5s ease, color .5s ease, opacity .8s var(--ease-out), transform .8s var(--ease-out); }
 
 @media (max-width: 900px) {
   .page-frame, .section-frame, .nav { width: min(100% - 32px, 1320px); }

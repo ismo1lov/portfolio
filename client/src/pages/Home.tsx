@@ -25,16 +25,16 @@ const navItems = [
 
 const carouselSlides = [
   {
-    image: "/manus-storage/greenline-work_f706024f.png",
-    label: "Northstar / 2024",
-    name: <>Northstar<br />in motion.</>,
-    summary: "A travel platform that turns planning into a feeling of forward motion. Strategy, identity, product design and a new digital home.",
+    image: "/manus-storage/ismo1lov-dev-hero_24dfba37.png",
+    label: "Stackline / 2025",
+    name: <>Stackline<br />in motion.</>,
+    summary: "A fullstack product system where robust backend architecture meets a calm, high-converting interface. Strategy, product design and engineering.",
   },
   {
-    image: "/manus-storage/greenline-hero_6d7418bf.png",
-    label: "Kite / 2024",
-    name: <>Kite<br />takes flight.</>,
-    summary: "A sharper brand world and a high-converting digital experience for a new generation of ambitious products.",
+    image: "/manus-storage/ismo1lov-stackline-work_850b0124.png",
+    label: "APIOS / 2024",
+    name: <>APIs that<br />scale.</>,
+    summary: "A resilient service layer and calm data experience for a product built to grow from first user to full team.",
   },
 ];
 
@@ -212,6 +212,7 @@ export default function Home() {
             <article className="work-feature" key={activeSlide}>
               <div className="work-image">
                 <img src={carouselSlides[activeSlide].image} alt={`${carouselSlides[activeSlide].label} case study artwork`} />
+                <div className="work-code-card" aria-hidden="true"><span className="code-dot" /><span className="code-dot" /><span className="code-dot" /><div className="code-lines"><i /><i /><i /><i /><i /></div><b>ship / stable / 99.9%</b></div>
                 <span className="work-image-label">{carouselSlides[activeSlide].label}</span>
               </div>
               <div className="work-detail">
@@ -220,7 +221,7 @@ export default function Home() {
                   <h3 className="work-name">{carouselSlides[activeSlide].name}</h3>
                   <p className="work-summary">{carouselSlides[activeSlide].summary}</p>
                 </div>
-                <a className="work-link" href="mailto:salom@skstudio.uz?subject=Northstar%20case%20study">View case study <ArrowUpRight size={16} /></a>
+                <a className="work-link" href="mailto:salom@skstudio.uz?subject=Stackline%20case%20study">View case study <ArrowUpRight size={16} /></a>
                 <div className="carousel-controls" aria-label="Portfolio carousel controls">
                   {carouselSlides.map((slide, index) => <button key={slide.label} className={index === activeSlide ? "is-active" : ""} onClick={() => setActiveSlide(index)} aria-label={`Show ${slide.label}`} />)}
                 </div>

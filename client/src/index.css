@@ -751,7 +751,7 @@ textarea,
   }
 
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-18px);
   }
 }
 
@@ -772,31 +772,15 @@ textarea,
   margin: 0 auto;
 }
 
-.about-image::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  height: 80%;
-  background: radial-gradient(circle, rgba(184, 242, 48, .2) 0%, rgba(184, 242, 48, .05) 40%, transparent 70%);
-  border-radius: 24px;
-  filter: blur(30px);
-  z-index: -1;
-  pointer-events: none;
-}
-
 .about-image img {
   width: 100%;
   aspect-ratio: 1/1;
   object-fit: cover;
   display: block;
   border-radius: 24px;
-  animation: float 4s ease-in-out infinite;
+  animation: float 3s ease-in-out infinite;
   position: relative;
   z-index: 1;
-  box-shadow: 0 0 10px rgba(184, 242, 48, .6), 0 0 25px rgba(184, 242, 48, .4), 0 0 50px rgba(184, 242, 48, .25), 0 0 80px rgba(184, 242, 48, .15), 0 0 120px rgba(184, 242, 48, .08);
 }
 
 .about-corner {
@@ -1679,7 +1663,7 @@ textarea,
   .about-image img {
     aspect-ratio: 1/1;
     object-fit: cover;
-    box-shadow: 0 0 15px rgba(184, 242, 48, .4), 0 0 40px rgba(184, 242, 48, .25), 0 0 80px rgba(184, 242, 48, .12), 0 0 120px rgba(184, 242, 48, .06);
+    animation: float 3s ease-in-out infinite;
   }
 
   .skills-grid {

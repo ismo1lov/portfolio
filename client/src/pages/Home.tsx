@@ -105,7 +105,7 @@ export default function Home() {
     const corners = Array.from(document.querySelectorAll<HTMLElement>(".about-corner"));
     if (!floatEl && corners.length === 0) return;
     let rafId = 0;
-    const duration = 3200;
+    const duration = 5000;
     const start = performance.now();
     const tick = (now: number) => {
       const elapsed = (now - start) % duration;

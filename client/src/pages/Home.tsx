@@ -115,9 +115,8 @@ export default function Home() {
         floatEl.style.transform = `translateY(${offset}px)`;
         floatEl.style.willChange = "transform";
       }
-      const cornerOffset = -Math.sin(phase) * 12;
       corners.forEach((el) => {
-        el.style.translate = `0 ${cornerOffset}px`;
+        el.style.translate = `0 ${offset}px`;
         el.style.willChange = "transform";
       });
       rafId = requestAnimationFrame(tick);

@@ -114,6 +114,9 @@ export default function Home() {
     typeof window !== "undefined" &&
     (window.performance?.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming | undefined)?.type ===
       "reload";
+  const [skipDrop] = useState(
+    () => typeof window !== "undefined" && window.sessionStorage.getItem("intro:pre-reload-drop") === "1",
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("top");
@@ -168,9 +171,31 @@ export default function Home() {
     let exitTimer: number | undefined;
     let doneTimer: number | undefined;
     let enterRaf: number | undefined;
+    let refreshTimer: number | undefined;
     exitTimer = window.setTimeout(() => setIntroState("exit"), isReload ? 2300 : 2400);
     doneTimer = window.setTimeout(() => setIntroState("done"), isReload ? 3400 : 3200);
-    enterRaf = window.requestAnimationFrame(() => setEntered(true));
+    if (isReload && !skipDrop) {
+      enterRaf = window.requestAnimationFrame(() => setEntered(true));
+    }
+    window.sessionStorage.removeItem("intro:pre-reload-drop");
+
+    const onRefreshKeyDown = (event: KeyboardEvent) => {
+      const wantsRefresh =
+        event.key === "F5" ||
+        ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "r");
+      if (!wantsRefresh) return;
+      event.preventDefault();
+      if (window.sessionStorage.getItem("intro:pre-reload-drop") === "1") return;
+      window.sessionStorage.setItem("intro:pre-reload-drop", "1");
+      const overlay = document.querySelector<HTMLElement>(".welcome-screen");
+      if (overlay) {
+        overlay.classList.remove("is-enter", "is-exit");
+        overlay.classList.add("is-pre-reload");
+        void overlay.offsetWidth;
+      }
+      refreshTimer = window.setTimeout(() => window.location.reload(), 1300);
+    };
+    window.addEventListener("keydown", onRefreshKeyDown);
     const revealObserver = new IntersectionObserver(
       (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
       { threshold: 0.14 },
@@ -227,6 +252,8 @@ export default function Home() {
       if (exitTimer) window.clearTimeout(exitTimer);
       if (doneTimer) window.clearTimeout(doneTimer);
       if (enterRaf) window.cancelAnimationFrame(enterRaf);
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      window.removeEventListener("keydown", onRefreshKeyDown);
       revealObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
       locomotive.destroy();
@@ -254,7 +281,7 @@ export default function Home() {
 
   return (
 <div className="site-shell" id="top">
-      <div className={`welcome-screen ${isReload ? "is-reload" : ""} ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""}`} aria-hidden="true">
+      <div className={`welcome-screen ${isReload && !skipDrop ? "is-reload" : "is-open"} ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""} ${skipDrop ? "is-skip" : ""}`} aria-hidden="true">
           <div className="welcome-mark">
             <span className="welcome-kicker">Portfolio</span>
             <span className="welcome-word-frame">

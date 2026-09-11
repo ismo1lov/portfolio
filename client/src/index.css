@@ -120,6 +120,42 @@ button {
   pointer-events: none;
 }
 
+.welcome-screen.is-open {
+  transform: translateY(0);
+}
+
+.welcome-screen.is-pre-reload {
+  transform: translateY(0) !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  animation: welcomeDrop .9s var(--ease-out) forwards;
+}
+
+.welcome-screen.is-skip .welcome-kicker,
+.welcome-screen.is-skip .welcome-char {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+.welcome-screen.is-skip .welcome-ring-l {
+  animation: none;
+  left: -.06em;
+  transform: translate(-100%, -50%) rotate(720deg);
+}
+
+.welcome-screen.is-skip .welcome-ring-r {
+  animation: none;
+  right: -.06em;
+  transform: translate(100%, -50%) rotate(720deg);
+}
+
+.welcome-screen.is-skip .welcome-line:after {
+  animation: none;
+  transform: translateX(0);
+}
+
 .welcome-screen::after {
   content: '';
   position: absolute;

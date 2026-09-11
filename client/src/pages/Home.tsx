@@ -102,22 +102,28 @@ export default function Home() {
 
   useEffect(() => {
     const floatEl = document.querySelector<HTMLElement>(".about-float");
-    if (floatEl) {
-      let rafId = 0;
-      const duration = 3200;
-      const distance = 26;
-      const start = performance.now();
-      const tick = (now: number) => {
-        const elapsed = (now - start) % duration;
-        const phase = (elapsed / duration) * Math.PI * 2;
-        const offset = -Math.sin(phase) * distance;
+    const corners = Array.from(document.querySelectorAll<HTMLElement>(".about-corner"));
+    if (!floatEl && corners.length === 0) return;
+    let rafId = 0;
+    const duration = 3200;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const elapsed = (now - start) % duration;
+      const phase = (elapsed / duration) * Math.PI * 2;
+      const offset = -Math.sin(phase) * 26;
+      if (floatEl) {
         floatEl.style.transform = `translateY(${offset}px)`;
         floatEl.style.willChange = "transform";
-        rafId = requestAnimationFrame(tick);
-      };
+      }
+      const cornerOffset = -Math.sin(phase) * 12;
+      corners.forEach((el) => {
+        el.style.translate = `0 ${cornerOffset}px`;
+        el.style.willChange = "transform";
+      });
       rafId = requestAnimationFrame(tick);
-      return () => cancelAnimationFrame(rafId);
-    }
+    };
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   useEffect(() => {

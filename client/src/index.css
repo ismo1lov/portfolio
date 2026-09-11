@@ -777,7 +777,7 @@ textarea,
 }
 
 .about-float {
-  animation: float 3s ease-in-out infinite;
+  will-change: transform;
 }
 
 .about-image img {
@@ -806,20 +806,17 @@ textarea,
   text-decoration: none;
   border-radius: 24px;
   z-index: 2;
-  animation: float 3s ease-in-out infinite;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .about-corner-top {
   top: -1px;
   left: -1px;
-  animation-delay: 0s;
 }
 
 .about-corner-bottom {
   bottom: -1px;
   right: -1px;
-  animation-delay: 1.5s;
 }
 
 .about-corner-label {

@@ -41,12 +41,28 @@ const carouselSlides = [
     label: "Stackline / 2025",
     name: <>Stackline<br />in motion.</>,
     summary: "A fullstack product system where robust backend architecture meets a calm, high-converting interface. Strategy, product design and engineering.",
+    colorClass: "stack-card--ink",
   },
   {
     image: "/work-apios.svg",
     label: "APIOS / 2024",
     name: <>APIs that<br />scale.</>,
     summary: "A resilient service layer and calm data experience for a product built to grow from first user to full team.",
+    colorClass: "stack-card--acid",
+  },
+  {
+    image: "/work-ilus.svg",
+    label: "KITE / 2024",
+    name: <>Brands with<br />a pulse.</>,
+    summary: "Identity and motion system for a studio that treats every touchpoint as a chance to feel different.",
+    colorClass: "stack-card--paper",
+  },
+  {
+    image: "/hero-art.svg",
+    label: "NORTH / 2023",
+    name: <>Interfaces<br />that orient.</>,
+    summary: "A web experience rebuilt around wayfinding, editorial rhythm and uncluttered reading for a design office.",
+    colorClass: "stack-card--moss",
   },
 ];
 
@@ -94,9 +110,13 @@ function isDarkBackground(color: string) {
 export default function Home() {
   const [introState, setIntroState] = useState<"enter" | "exit" | "done">("enter");
   const [entered, setEntered] = useState(false);
-  const [revisited] = useState(() => !!sessionStorage.getItem("intro-shown"));
+  const isReload =
+    typeof window !== "undefined" &&
+    (window.performance?.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming | undefined)?.type ===
+      "reload";
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("top");
   const [navDark, setNavDark] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [particleColor, setParticleColor] = useState<[number, number, number]>([200, 200, 200]);
@@ -145,17 +165,12 @@ export default function Home() {
     window.scrollTo(0, 0);
     locomotive.scrollTo(0, { duration: 0 });
 
-    const isRevisit = sessionStorage.getItem("intro-shown") === "true" || revisited;
-    sessionStorage.setItem("intro-shown", "true");
-
     let exitTimer: number | undefined;
     let doneTimer: number | undefined;
     let enterRaf: number | undefined;
-    if (!isRevisit) {
-      exitTimer = window.setTimeout(() => setIntroState("exit"), 1700);
-      doneTimer = window.setTimeout(() => setIntroState("done"), 2550);
-      enterRaf = window.requestAnimationFrame(() => setEntered(true));
-    }
+    exitTimer = window.setTimeout(() => setIntroState("exit"), isReload ? 2300 : 2400);
+    doneTimer = window.setTimeout(() => setIntroState("done"), isReload ? 3400 : 3200);
+    enterRaf = window.requestAnimationFrame(() => setEntered(true));
     const revealObserver = new IntersectionObserver(
       (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
       { threshold: 0.14 },
@@ -166,6 +181,7 @@ export default function Home() {
       setScrolled(window.scrollY > 70);
       let dark = false;
       let hidden = false;
+      const probe = window.scrollY + window.innerHeight * 0.3;
       const centerY = window.innerHeight / 2;
       const vh = window.innerHeight;
       const workSection = document.getElementById("work");
@@ -196,6 +212,15 @@ export default function Home() {
         setParticleHidden(hidden);
       }
       setNavDark(dark);
+
+      let active = "top";
+      for (const [, id] of navItems) {
+        if (id === "top") continue;
+        const section = document.getElementById(id);
+        if (!section) continue;
+        if (probe >= section.getBoundingClientRect().top + window.scrollY) active = id;
+      }
+      setActiveSection((prev) => (prev === active ? prev : active));
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
@@ -229,24 +254,23 @@ export default function Home() {
 
   return (
 <div className="site-shell" id="top">
-      {!revisited && (
-      <div className={`welcome-screen ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""}`} aria-hidden="true">
+      <div className={`welcome-screen ${isReload ? "is-reload" : ""} ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""}`} aria-hidden="true">
           <div className="welcome-mark">
-            <span className="welcome-kicker">Portfolio / 2024—2025</span>
+            <span className="welcome-kicker">Portfolio</span>
             <span className="welcome-word-frame">
+              <span className="welcome-ring-l" aria-hidden="true">&lt;</span>
               <span className="welcome-word" aria-label={introWord}>
                 {Array.from(introWord).map((char, index) => (
-                  <span className="welcome-char" style={{ animationDelay: `${(0.15 + index * 0.045).toFixed(2)}s` }} key={index}>
+                  <span className="welcome-char" style={{ animationDelay: `${(isReload ? 1.3 : 0.9) + index * 0.05}s` }} key={index}>
                     {char === " " ? "\u00A0" : char}
                   </span>
                 ))}
               </span>
-              <span className="welcome-ring" aria-hidden="true"><span className="welcome-ring-l">&lt;</span><span className="welcome-ring-r">&gt;</span></span>
+              <span className="welcome-ring-r" aria-hidden="true">&gt;</span>
             </span>
             <span className="welcome-line" />
           </div>
         </div>
-      )}
 
       <header className="nav-wrap">
         <nav className={`nav ${scrolled ? "is-scrolled" : "is-hero"} ${navDark ? "is-dark-section" : ""}`} aria-label="Main navigation">
@@ -255,12 +279,12 @@ export default function Home() {
           </button>
           <div className={`nav-links ${menuOpen ? "is-open" : ""}`}>
             {navItems.map(([label, id]) => (
-              <a href={`#${id}`} key={id} onClick={(event) => { event.preventDefault(); handleNav(id); }}>
+              <a href={`#${id}`} key={id} onClick={(event) => { event.preventDefault(); handleNav(id); }} className={activeSection === id ? "is-active" : ""}>
                 {label}
               </a>
             ))}
           </div>
-          <a className="nav-cta" href="mailto:salom@skstudio.uz">Let’s talk <ArrowUpRight size={14} /></a>
+          <a className="nav-cta" href="#contact" onClick={(event) => { event.preventDefault(); handleNav("contact"); }}>Let’s talk <ArrowUpRight size={14} /></a>
           <button className="nav-toggle" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation">
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -311,7 +335,7 @@ export default function Home() {
                   <img src="/about-image.png" alt="Abstract developer portrait" />
                 </div>
                 <a className="about-corner about-corner-top" href="mailto:salom@skstudio.uz" aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
-                <a className="about-corner about-corner-bottom" href="mailto:salom@skstudio.uz?subject=Download%20CV" aria-label="Download CV"><span className="about-corner-label">Download CV</span><ArrowRight size={16} /></a>
+                <a className="about-corner about-corner-bottom" href="/Ismoilov%20Abdulloh.pdf" target="_blank" rel="noreferrer" aria-label="Download CV"><span className="about-corner-label">Download CV</span><ArrowRight size={16} /></a>
               </div>
             </div>
           </div>
@@ -342,23 +366,23 @@ export default function Home() {
               <h2 className="work-title">A few things<br />I’ve made <em>recently.</em></h2>
               <img className="work-illus" src="/work-ilus.svg" alt="Work illustration" />
             </div>
-            <div className="reveal" data-reveal="scale">
-              <article className="work-feature">
-                <div className="work-image">
-                  <img src={carouselSlides[0].image} alt={`${carouselSlides[0].label} case study artwork`} />
-                  <div className="work-code-card" aria-hidden="true"><span className="code-dot" /><span className="code-dot" /><span className="code-dot" /><div className="code-lines"><i /><i /><i /><i /><i /></div><b>ship / stable / 99.9%</b></div>
-                  <span className="work-image-label">{carouselSlides[0].label}</span>
-                </div>
-                <div className="work-detail">
-                  <div>
-                    <div className="work-meta"><span>Featured project</span></div>
-                    <h3 className="work-name">{carouselSlides[0].name}</h3>
-                    <p className="work-summary">{carouselSlides[0].summary}</p>
-                  </div>
-                  <a className="work-link" href="mailto:salom@skstudio.uz?subject=Stackline%20case%20study">View case study <ArrowUpRight size={16} /></a>
-                </div>
-              </article>
+          </div>
+          {carouselSlides.slice(0, 1).map((slide) => (
+            <div key={slide.label} className={`stack-card single ${slide.colorClass}`}>
+              <div className="stack-card-media">
+                <div className="work-code-card" aria-hidden="true"><span className="code-dot" /><span className="code-dot" /><span className="code-dot" /><div className="code-lines"><i /><i /><i /><i /><i /></div><b>ship / stable / 99.9%</b></div>
+                <img src={slide.image} alt={`${slide.label} case study artwork`} />
+                <span className="work-image-label">{slide.label}</span>
+              </div>
+              <div className="stack-card-detail">
+                <div className="work-meta"><span>Featured project</span></div>
+                <h3 className="work-name">{slide.name}</h3>
+                <p className="work-summary">{slide.summary}</p>
+                <a className="work-link" href={`mailto:salom@skstudio.uz?subject=${slide.label.split(" ")[0]}%20case%20study`}>View case study <ArrowUpRight size={16} /></a>
+              </div>
             </div>
+          ))}
+          <div className="section-frame">
             <div className="work-list">
               {miniWork.map(([date, title, kind], index) => <a className="work-mini reveal" data-reveal="up" data-delay={index} href="mailto:salom@skstudio.uz" key={title}><small>{date}</small><h3>{title}</h3><p>{kind} <ArrowUpRight size={13} style={{ verticalAlign: "middle" }} /></p></a>)}
             </div>

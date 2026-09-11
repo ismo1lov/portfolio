@@ -747,11 +747,11 @@ textarea,
 
   0%,
   100% {
-    transform: translateY(0);
+    translate: 0 0;
   }
 
   50% {
-    transform: translateY(-25px);
+    translate: 0 -25px;
   }
 }
 

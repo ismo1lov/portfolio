@@ -101,6 +101,26 @@ export default function Home() {
   const scrollRef = useRef<LocomotiveScroll | null>(null);
 
   useEffect(() => {
+    const floatEl = document.querySelector<HTMLElement>(".about-float");
+    if (floatEl) {
+      let rafId = 0;
+      const duration = 3200;
+      const distance = 26;
+      const start = performance.now();
+      const tick = (now: number) => {
+        const elapsed = (now - start) % duration;
+        const phase = (elapsed / duration) * Math.PI * 2;
+        const offset = -Math.sin(phase) * distance;
+        floatEl.style.transform = `translateY(${offset}px)`;
+        floatEl.style.willChange = "transform";
+        rafId = requestAnimationFrame(tick);
+      };
+      rafId = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(rafId);
+    }
+  }, []);
+
+  useEffect(() => {
     const locomotive = new LocomotiveScroll({
       lenisOptions: {
         smoothWheel: true,
@@ -176,7 +196,7 @@ export default function Home() {
   return (
 <div className="site-shell" id="top">
       {!revisited && (
-        <div className={`welcome-screen ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""}`} aria-hidden="true">
+      <div className={`welcome-screen ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""}`} aria-hidden="true">
           <div className="welcome-mark">
             <span className="welcome-kicker">Portfolio / 2024—2025</span>
             <span className="welcome-word-frame">

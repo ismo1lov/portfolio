@@ -91,7 +91,7 @@ button {
   color: var(--paper);
   transform: translateY(-100%);
   will-change: transform;
-  transition: transform .9s var(--ease-out), opacity .5s ease, visibility .8s;
+  transition: transform .5s var(--ease-out), opacity .5s ease, visibility .5s;
 }
 
 .welcome-screen.is-enter {
@@ -648,6 +648,67 @@ textarea,
   background: var(--ink-soft);
 }
 
+.hero-social {
+  position: absolute;
+  right: 34px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  z-index: 2;
+}
+
+.hero-social-line {
+  width: 1px;
+  flex: 1;
+  min-height: 44px;
+  background: linear-gradient(180deg, transparent, rgba(242, 240, 233, .4), transparent);
+}
+
+.hero-social-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.hero-social-links a {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(184, 242, 48, .35);
+  border-radius: 50%;
+  color: var(--acid);
+  will-change: transform;
+  transition: transform .5s cubic-bezier(.4, 0, .2, 1), background-color .5s cubic-bezier(.4, 0, .2, 1), color .5s cubic-bezier(.4, 0, .2, 1), border-color .5s cubic-bezier(.4, 0, .2, 1);
+}
+
+.hero-social-links a::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+}
+
+.hero-social-links a svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.6;
+  transform-origin: center;
+}
+
+.hero-social-links a:hover {
+  background: var(--acid);
+  border-color: var(--acid);
+  color: var(--ink);
+  transform: translateX(-10px) scale(1.12);
+}
+
 .ticker {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -806,7 +867,7 @@ textarea,
   text-decoration: none;
   border-radius: 24px;
   z-index: 2;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: transform .5s ease, border-color .5s ease, box-shadow .5s ease;
 }
 
 .about-corner-top {
@@ -831,7 +892,7 @@ textarea,
   height: 16px;
   flex: none;
   /* Transform animatsiyasi uchun transition */
-  transition: transform 0.3s ease;
+  transition: transform .5s ease;
 }
 
 /* Hover effekti */
@@ -995,13 +1056,9 @@ textarea,
   font-style: normal;
 }
 
-.work-caption {
-  max-width: 260px;
+.work-illus {
+  width: 230px;
   margin: 0 0 4px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.5;
-  letter-spacing: .015em;
 }
 
 .work-feature {
@@ -1332,11 +1389,13 @@ textarea,
   display: grid;
   gap: 28px;
   margin-top: 30px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  padding: 34px;
+  border: 1px solid rgba(255, 255, 255, .4);
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .28), rgba(255, 255, 255, .1));
+  backdrop-filter: blur(5px) saturate(180%);
+  -webkit-backdrop-filter: blur(5px) saturate(180%);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .1), inset 0 1px 0 rgba(255, 255, 255, .4), inset 0 -1px 0 rgba(255, 255, 255, .08);
 }
 
 .contact-field {
@@ -1531,7 +1590,7 @@ textarea,
 .reveal {
   opacity: 0;
   transform: translate3d(0, 36px, 0);
-  transition: opacity .8s var(--ease-out), transform .8s var(--ease-out);
+  transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
   will-change: opacity, transform;
 }
 
@@ -1581,11 +1640,11 @@ textarea,
 }
 
 .skill-card.reveal {
-  transition: background .5s var(--ease-out), color .5s var(--ease-out), opacity .8s var(--ease-out), transform .8s var(--ease-out);
+  transition: background .5s var(--ease-out), color .5s var(--ease-out), opacity .5s var(--ease-out), transform .5s var(--ease-out);
 }
 
 .work-mini.reveal {
-  transition: background .5s ease, color .5s ease, opacity .8s var(--ease-out), transform .8s var(--ease-out);
+  transition: background .5s ease, color .5s ease, opacity .5s var(--ease-out), transform .5s var(--ease-out);
 }
 
 @media (max-width: 900px) {
@@ -1650,6 +1709,10 @@ textarea,
     display: none;
   }
 
+  .hero-social {
+    display: none;
+  }
+
   .section {
     padding: 96px 0;
   }
@@ -1681,7 +1744,7 @@ textarea,
     display: block;
   }
 
-  .work-caption {
+  .work-illus {
     margin-top: 24px;
   }
 
@@ -1796,22 +1859,5 @@ textarea,
 @media (min-width: 901px) {
   .contact-top {
     padding-right: clamp(24px, 3vw, 56px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *:before,
-  *:after {
-    scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
-
-  .reveal {
-    opacity: 1;
-    transform: none;
   }
 }

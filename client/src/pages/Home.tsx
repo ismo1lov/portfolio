@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import LocomotiveScroll from "locomotive-scroll";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 import CurvedLoop from "../components/CurvedLoop";
+import DottedSurface from "../components/ui/dotted-surface";
 import {
   ArrowDown,
   ArrowRight,
@@ -98,6 +99,10 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [navDark, setNavDark] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [particleColor, setParticleColor] = useState<[number, number, number]>([200, 200, 200]);
+  const [particleHidden, setParticleHidden] = useState(false);
+  const particleColorRef = useRef(particleColor);
+  const particleHiddenRef = useRef(particleHidden);
   const scrollRef = useRef<LocomotiveScroll | null>(null);
 
   useEffect(() => {
@@ -160,12 +165,36 @@ export default function Home() {
     const onScroll = () => {
       setScrolled(window.scrollY > 70);
       let dark = false;
+      let hidden = false;
+      const centerY = window.innerHeight / 2;
+      const vh = window.innerHeight;
+      const workSection = document.getElementById("work");
+      if (workSection) {
+        const rect = workSection.getBoundingClientRect();
+        hidden = rect.top < vh && rect.bottom > 0;
+      }
       document.querySelectorAll<HTMLElement>("section, .work-feature").forEach((element) => {
         const rect = element.getBoundingClientRect();
         if (rect.top <= 84 && rect.bottom >= 84) {
           dark = isDarkBackground(getComputedStyle(element).backgroundColor);
         }
+        if (rect.top <= centerY && rect.bottom >= centerY) {
+          const isDark = isDarkBackground(getComputedStyle(element).backgroundColor);
+          const next: [number, number, number] = isDark ? [200, 200, 200] : [0, 0, 0];
+          if (
+            particleColorRef.current[0] !== next[0] ||
+            particleColorRef.current[1] !== next[1] ||
+            particleColorRef.current[2] !== next[2]
+          ) {
+            particleColorRef.current = next;
+            setParticleColor(next);
+          }
+        }
       });
+      if (particleHiddenRef.current !== hidden) {
+        particleHiddenRef.current = hidden;
+        setParticleHidden(hidden);
+      }
       setNavDark(dark);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -240,6 +269,7 @@ export default function Home() {
 
       <main>
         <section className="hero" aria-labelledby="hero-title">
+          <DottedSurface size={8} opacity={0.8} sizeAttenuation vertexColors particleColor={particleColor} hidden={particleHidden} aria-hidden="true" />
           <div className="hero-art" aria-hidden="true" />
           <div className="page-frame hero-copy">
             <div className="eyebrow reveal">Fullstack developer</div>
@@ -247,6 +277,16 @@ export default function Home() {
             <div className="hero-bottom reveal" data-delay="2">
               <p className="hero-intro">I combine strategy, design, and code to craft digital experiences people remember.</p>
             </div>
+          </div>
+          <div className="hero-social" aria-label="Social media links">
+            <span className="hero-social-line" aria-hidden="true" />
+            <div className="hero-social-links">
+              <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={18} /></a>
+              <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18} /></a>
+              <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={18} /></a>
+              <a href="https://t.me/" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={18} /></a>
+            </div>
+            <span className="hero-social-line" aria-hidden="true" />
           </div>
           <div className="scroll-cue"><span /> Scroll to explore <ArrowDown size={13} /></div>
         </section>
@@ -300,7 +340,7 @@ export default function Home() {
             <div className="section-label reveal">Selected work</div>
             <div className="work-header reveal">
               <h2 className="work-title">A few things<br />I’ve made <em>recently.</em></h2>
-              <p className="work-caption">Projects across different fields, one shared principle: clear thinking, good rhythm, no unnecessary noise.</p>
+              <img className="work-illus" src="/work-ilus.svg" alt="Work illustration" />
             </div>
             <div className="reveal" data-reveal="scale">
               <article className="work-feature">

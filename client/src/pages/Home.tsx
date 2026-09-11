@@ -242,7 +242,9 @@ export default function Home() {
                 </div>
               </div>
               <div className="about-image reveal" data-reveal="scale">
-                <img src="/about-image.png" alt="Abstract developer portrait" />
+                <div className="about-float">
+                  <img src="/about-image.png" alt="Abstract developer portrait" />
+                </div>
                 <a className="about-corner about-corner-top" href="mailto:salom@skstudio.uz" aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
                 <a className="about-corner about-corner-bottom" href="mailto:salom@skstudio.uz?subject=Download%20CV" aria-label="Download CV"><span className="about-corner-label">Download CV</span><ArrowRight size={16} /></a>
               </div>

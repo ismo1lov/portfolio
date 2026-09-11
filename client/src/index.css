@@ -747,11 +747,11 @@ textarea,
 
   0%,
   100% {
-    translate: 0 0;
+    transform: translateY(0);
   }
 
   50% {
-    translate: 0 -25px;
+    transform: translateY(-25px);
   }
 }
 
@@ -772,13 +772,16 @@ textarea,
   margin: 0 auto;
 }
 
+.about-float {
+  animation: float 3s ease-in-out infinite;
+}
+
 .about-image img {
   width: 100%;
   aspect-ratio: 1/1;
   object-fit: cover;
   display: block;
   border-radius: 24px;
-  animation: float 3s ease-in-out infinite;
   position: relative;
   z-index: 1;
 }
@@ -1663,7 +1666,6 @@ textarea,
   .about-image img {
     aspect-ratio: 1/1;
     object-fit: cover;
-    animation: float 3s ease-in-out infinite;
   }
 
   .skills-grid {

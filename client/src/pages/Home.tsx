@@ -108,8 +108,6 @@ function isDarkBackground(color: string) {
 }
 
 export default function Home() {
-  const [introState, setIntroState] = useState<"enter" | "exit" | "done">("enter");
-  const [entered, setEntered] = useState(false);
   const isReload =
     typeof window !== "undefined" &&
     (window.performance?.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming | undefined)?.type ===
@@ -170,14 +168,19 @@ export default function Home() {
 
     let exitTimer: number | undefined;
     let doneTimer: number | undefined;
-    let enterRaf: number | undefined;
     let refreshTimer: number | undefined;
-    exitTimer = window.setTimeout(() => setIntroState("exit"), isReload ? 2300 : 2400);
-    doneTimer = window.setTimeout(() => setIntroState("done"), isReload ? 3400 : 3200);
-    if (isReload && !skipDrop) {
-      enterRaf = window.requestAnimationFrame(() => setEntered(true));
+    const loader = document.querySelector<HTMLElement>(".welcome-screen");
+    if (loader) {
+      if (isReload) loader.classList.add("is-reload");
+      if (skipDrop) loader.classList.add("is-skip");
     }
     window.sessionStorage.removeItem("intro:pre-reload-drop");
+    exitTimer = window.setTimeout(() => {
+      loader?.classList.add("is-exit");
+    }, isReload ? 2050 : 2400);
+    doneTimer = window.setTimeout(() => {
+      loader?.classList.add("is-done");
+    }, isReload ? 2950 : 3200);
 
     const onRefreshKeyDown = (event: KeyboardEvent) => {
       const wantsRefresh =
@@ -189,11 +192,10 @@ export default function Home() {
       window.sessionStorage.setItem("intro:pre-reload-drop", "1");
       const overlay = document.querySelector<HTMLElement>(".welcome-screen");
       if (overlay) {
-        overlay.classList.remove("is-enter", "is-exit");
-        overlay.classList.add("is-pre-reload");
-        void overlay.offsetWidth;
+        overlay.classList.remove("is-enter", "is-exit", "is-done");
+        overlay.classList.add("is-cover");
       }
-      refreshTimer = window.setTimeout(() => window.location.reload(), 1300);
+      refreshTimer = window.setTimeout(() => window.location.reload(), 400);
     };
     window.addEventListener("keydown", onRefreshKeyDown);
     const revealObserver = new IntersectionObserver(
@@ -251,7 +253,6 @@ export default function Home() {
     return () => {
       if (exitTimer) window.clearTimeout(exitTimer);
       if (doneTimer) window.clearTimeout(doneTimer);
-      if (enterRaf) window.cancelAnimationFrame(enterRaf);
       if (refreshTimer) window.clearTimeout(refreshTimer);
       window.removeEventListener("keydown", onRefreshKeyDown);
       revealObserver.disconnect();
@@ -281,24 +282,6 @@ export default function Home() {
 
   return (
 <div className="site-shell" id="top">
-      <div className={`welcome-screen ${isReload && !skipDrop ? "is-reload" : "is-open"} ${entered ? "is-enter" : ""} ${introState === "exit" || introState === "done" ? "is-exit" : ""} ${introState === "done" ? "is-done" : ""} ${skipDrop ? "is-skip" : ""}`} aria-hidden="true">
-          <div className="welcome-mark">
-            <span className="welcome-kicker">Portfolio</span>
-            <span className="welcome-word-frame">
-              <span className="welcome-ring-l" aria-hidden="true">&lt;</span>
-              <span className="welcome-word" aria-label={introWord}>
-                {Array.from(introWord).map((char, index) => (
-                  <span className="welcome-char" style={{ animationDelay: `${(isReload ? 1.3 : 0.9) + index * 0.05}s` }} key={index}>
-                    {char === " " ? "\u00A0" : char}
-                  </span>
-                ))}
-              </span>
-              <span className="welcome-ring-r" aria-hidden="true">&gt;</span>
-            </span>
-            <span className="welcome-line" />
-          </div>
-        </div>
-
       <header className="nav-wrap">
         <nav className={`nav ${scrolled ? "is-scrolled" : "is-hero"} ${navDark ? "is-dark-section" : ""}`} aria-label="Main navigation">
           <button className="logo" onClick={() => handleNav("top")} aria-label="Go to top">
@@ -332,10 +315,10 @@ export default function Home() {
           <div className="hero-social" aria-label="Social media links">
             <span className="hero-social-line" aria-hidden="true" />
             <div className="hero-social-links">
-              <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={18} /></a>
-              <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18} /></a>
-              <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={18} /></a>
-              <a href="https://t.me/" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={18} /></a>
+              <a href="https://github.com/ismo1lov" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={18} /></a>
+              <a href="https://www.linkedin.com/in/ismo1lov" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={18} /></a>
+              <a href="https://www.instagram.com/ismo1lovabdulloh/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={18} /></a>
+              <a href="https://t.me/AbdullohIsmoilov" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={18} /></a>
             </div>
             <span className="hero-social-line" aria-hidden="true" />
           </div>
@@ -361,7 +344,7 @@ export default function Home() {
                 <div className="about-float">
                   <img src="/about-image.png" alt="Abstract developer portrait" />
                 </div>
-                <a className="about-corner about-corner-top" href="mailto:salom@skstudio.uz" aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
+                <a className="about-corner about-corner-top" href="mailto:mirzakarimovrasid@gmail.com" aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
                 <a className="about-corner about-corner-bottom" href="/Ismoilov%20Abdulloh.pdf" target="_blank" rel="noreferrer" aria-label="Download CV"><span className="about-corner-label">Download CV</span><ArrowRight size={16} /></a>
               </div>
             </div>
@@ -405,13 +388,13 @@ export default function Home() {
                 <div className="work-meta"><span>Featured project</span></div>
                 <h3 className="work-name">{slide.name}</h3>
                 <p className="work-summary">{slide.summary}</p>
-                <a className="work-link" href={`mailto:salom@skstudio.uz?subject=${slide.label.split(" ")[0]}%20case%20study`}>View case study <ArrowUpRight size={16} /></a>
+                <a className="work-link" href={`mailto:mirzakarimovrasid@gmail.com?subject=${slide.label.split(" ")[0]}%20case%20study`}>View case study <ArrowUpRight size={16} /></a>
               </div>
             </div>
           ))}
           <div className="section-frame">
             <div className="work-list">
-              {miniWork.map(([date, title, kind], index) => <a className="work-mini reveal" data-reveal="up" data-delay={index} href="mailto:salom@skstudio.uz" key={title}><small>{date}</small><h3>{title}</h3><p>{kind} <ArrowUpRight size={13} style={{ verticalAlign: "middle" }} /></p></a>)}
+              {miniWork.map(([date, title, kind], index) => <a className="work-mini reveal" data-reveal="up" data-delay={index} href="mailto:mirzakarimovrasid@gmail.com" key={title}><small>{date}</small><h3>{title}</h3><p>{kind} <ArrowUpRight size={13} style={{ verticalAlign: "middle" }} /></p></a>)}
             </div>
           </div>
         </section>
@@ -470,13 +453,17 @@ export default function Home() {
                 <p className="footer-tagline">Fullstack developer crafting calm, deliberate digital products. Let’s build something good together.</p>
               </div>
               <div className="footer-socials" aria-label="Social media links">
-                <a href="https://github.com/" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={20} /></a>
-                <a href="https://t.me/" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={20} /></a>
-                <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
-                <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
-                <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={20} /></a>
-                <a href="https://x.com/" target="_blank" rel="noreferrer" aria-label="X"><Twitter size={20} /></a>
+                <a href="https://github.com/ismo1lov" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={20} /></a>
+                <a href="https://t.me/AbdullohIsmoilov" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={20} /></a>
+                <a href="https://www.linkedin.com/in/ismo1lov" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
+                <a href="https://www.instagram.com/ismo1lovabdulloh/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
+                <a href="https://www.facebook.com/profile.php?id=61555173012563" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={20} /></a>
+                <a href="https://x.com/RaidMirzak83586" target="_blank" rel="noreferrer" aria-label="X"><Twitter size={20} /></a>
               </div>
+            </div>
+            <div className="footer-contact">
+              <a href="tel:+998977318666" aria-label="Call">tel: +998 97 731 86 66</a>
+              <a href="mailto:mirzakarimovrasid@gmail.com" aria-label="Email">mirzakarimovrasid@gmail.com</a>
             </div>
             <div className="footer-bottom">
               <span>© 2026 &lt;ismo1lov/&gt; / Made with intent.</span>

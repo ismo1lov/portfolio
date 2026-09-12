@@ -7,8 +7,71 @@
     <meta name="description" content="&lt;ismo1lov/&gt; — fullstack developer portfolio sahifasi." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>ismo1lov - Portfolio</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #101613;
+      }
+
+      #welcome-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: grid;
+        place-items: center;
+        background: #101613;
+        color: #f2f0e9;
+        transform: translateY(0);
+        will-change: transform;
+      }
+
+      .welcome-kicker,
+      .welcome-char {
+        opacity: 0;
+      }
+
+      .welcome-ring-l,
+      .welcome-ring-r {
+        position: absolute;
+        top: 50%;
+        color: #b8f230;
+        font-weight: 700;
+        line-height: 1;
+      }
+
+      .welcome-ring-l {
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(0);
+      }
+
+      .welcome-ring-r {
+        right: 50%;
+        transform: translate(50%, -50%) rotate(0);
+      }
+    </style>
   </head>
   <body>
+    <div class="welcome-screen" id="welcome-screen" aria-hidden="true">
+      <div class="welcome-mark">
+        <span class="welcome-kicker">Portfolio</span>
+        <span class="welcome-word-frame">
+          <span class="welcome-ring-l" aria-hidden="true">&lt;</span>
+          <span class="welcome-word" aria-label="ismo1lov">
+            <span class="welcome-char">i</span>
+            <span class="welcome-char">s</span>
+            <span class="welcome-char">m</span>
+            <span class="welcome-char">o</span>
+            <span class="welcome-char">1</span>
+            <span class="welcome-char">l</span>
+            <span class="welcome-char">o</span>
+            <span class="welcome-char">v</span>
+          </span>
+          <span class="welcome-ring-r" aria-hidden="true">&gt;</span>
+        </span>
+        <span class="welcome-line"></span>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script defer src="%VITE_ANALYTICS_ENDPOINT%/umami" data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>

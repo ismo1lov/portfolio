@@ -89,7 +89,7 @@ button {
   place-items: center;
   background: #101613;
   color: var(--paper);
-  transform: translateY(-100%);
+  transform: translateY(0);
   will-change: transform;
   transition: transform .5s var(--ease-out), opacity .5s ease, visibility .5s;
 }
@@ -120,16 +120,11 @@ button {
   pointer-events: none;
 }
 
-.welcome-screen.is-open {
-  transform: translateY(0);
-}
-
-.welcome-screen.is-pre-reload {
+.welcome-screen.is-cover {
   transform: translateY(0) !important;
   visibility: visible !important;
   opacity: 1 !important;
   pointer-events: auto !important;
-  animation: welcomeDrop .9s var(--ease-out) forwards;
 }
 
 .welcome-screen.is-skip .welcome-kicker,
@@ -141,13 +136,13 @@ button {
 
 .welcome-screen.is-skip .welcome-ring-l {
   animation: none;
-  left: -.06em;
+  left: -.2em;
   transform: translate(-100%, -50%) rotate(720deg);
 }
 
 .welcome-screen.is-skip .welcome-ring-r {
   animation: none;
-  right: -.06em;
+  right: -.2em;
   transform: translate(100%, -50%) rotate(720deg);
 }
 
@@ -203,6 +198,24 @@ button {
   animation: charIn .55s var(--ease-out) forwards;
 }
 
+.welcome-char:nth-child(1) { animation-delay: .9s; }
+.welcome-char:nth-child(2) { animation-delay: .95s; }
+.welcome-char:nth-child(3) { animation-delay: 1s; }
+.welcome-char:nth-child(4) { animation-delay: 1.05s; }
+.welcome-char:nth-child(5) { animation-delay: 1.1s; }
+.welcome-char:nth-child(6) { animation-delay: 1.15s; }
+.welcome-char:nth-child(7) { animation-delay: 1.2s; }
+.welcome-char:nth-child(8) { animation-delay: 1.25s; }
+
+.welcome-screen.is-reload .welcome-char:nth-child(1) { animation-delay: 1s; }
+.welcome-screen.is-reload .welcome-char:nth-child(2) { animation-delay: 1.05s; }
+.welcome-screen.is-reload .welcome-char:nth-child(3) { animation-delay: 1.1s; }
+.welcome-screen.is-reload .welcome-char:nth-child(4) { animation-delay: 1.15s; }
+.welcome-screen.is-reload .welcome-char:nth-child(5) { animation-delay: 1.2s; }
+.welcome-screen.is-reload .welcome-char:nth-child(6) { animation-delay: 1.25s; }
+.welcome-screen.is-reload .welcome-char:nth-child(7) { animation-delay: 1.3s; }
+.welcome-screen.is-reload .welcome-char:nth-child(8) { animation-delay: 1.35s; }
+
 .welcome-ring-l,
 .welcome-ring-r {
   position: absolute;
@@ -216,29 +229,29 @@ button {
 .welcome-ring-l {
   left: 50%;
   transform: translate(-50%, -50%) rotate(720deg);
-  animation: ringOutL .8s var(--ease-out) .9s forwards;
+  animation: bracketSpinL 1s linear forwards, ringOutL .8s var(--ease-out) 1.05s forwards;
 }
 
 .welcome-ring-r {
   right: 50%;
   transform: translate(50%, -50%) rotate(720deg);
-  animation: ringOutR .8s var(--ease-out) .9s forwards;
+  animation: bracketSpinR 1s linear forwards, ringOutR .8s var(--ease-out) 1.05s forwards;
 }
 
 .welcome-screen.is-reload .welcome-ring-l {
-  animation: bracketSpinL 1s linear .25s forwards, ringOutL .7s var(--ease-out) 1.3s forwards;
+  animation: bracketSpinL 1s linear forwards, ringOutL .7s var(--ease-out) .95s forwards;
 }
 
 .welcome-screen.is-reload .welcome-ring-r {
-  animation: bracketSpinR 1s linear .25s forwards, ringOutR .7s var(--ease-out) 1.3s forwards;
+  animation: bracketSpinR 1s linear forwards, ringOutR .7s var(--ease-out) .95s forwards;
 }
 
 .welcome-screen.is-reload .welcome-kicker {
-  animation-delay: 1.35s;
+  animation-delay: 1s;
 }
 
 .welcome-screen.is-reload .welcome-line:after {
-  animation-delay: 1.4s;
+  animation-delay: 1.05s;
 }
 
 .welcome-line {
@@ -291,7 +304,7 @@ button {
   }
 
   to {
-    left: -.06em;
+    left: -.2em;
     transform: translate(-100%, -50%) rotate(720deg);
   }
 }
@@ -303,7 +316,7 @@ button {
   }
 
   to {
-    right: -.06em;
+    right: -.2em;
     transform: translate(100%, -50%) rotate(720deg);
   }
 }
@@ -2093,7 +2106,28 @@ textarea,
     gap: 36px;
   }
 
-  .footer-bottom {
+.footer-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 38px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(242, 240, 233, .14);
+}
+
+.footer-contact a {
+  color: rgba(242, 240, 233, .72);
+  font: 500 13px/1.4 var(--mono);
+  letter-spacing: .04em;
+  text-decoration: none;
+  transition: color .5s ease;
+}
+
+.footer-contact a:hover {
+  color: var(--acid);
+}
+
+.footer-bottom {
     flex-wrap: wrap;
     margin-top: 60px;
   }

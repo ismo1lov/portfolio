@@ -1229,6 +1229,41 @@ textarea,
   margin: 0 0 4px;
 }
 
+.work-gallery {
+  width: min(100% - 48px, 1320px);
+  height: clamp(380px, 64vh, 640px);
+  margin: 56px auto 0;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  background:
+    radial-gradient(900px circle at 85% 20%, rgba(184, 242, 48, .32), transparent 60%),
+    radial-gradient(700px circle at 8% 90%, rgba(184, 242, 48, .2), transparent 55%),
+    linear-gradient(135deg, #20221f, #161a15 60%, #232b14);
+  border-radius: 40px;
+}
+
+@media (max-width: 900px) {
+  .circular-gallery-item {
+    width: 190px !important;
+    height: 210px !important;
+    margin-left: -95px !important;
+    margin-top: -105px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .circular-gallery-item {
+    width: 145px !important;
+    height: 160px !important;
+    margin-left: -72px !important;
+    margin-top: -80px !important;
+  }
+}
+
 .stack-card.single {
   max-width: 1320px;
   margin: 0 auto 60px;

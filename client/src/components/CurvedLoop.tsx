@@ -8,6 +8,7 @@ interface CurvedLoopProps {
   curveAmount?: number;
   direction?: "left" | "right";
   interactive?: boolean;
+  scrollDriven?: boolean;
 }
 
 const CurvedLoop = ({
@@ -17,6 +18,7 @@ const CurvedLoop = ({
   curveAmount = 400,
   direction = "left",
   interactive = true,
+  scrollDriven = false,
 }: CurvedLoopProps) => {
   const text = useMemo(() => {
     const hasTrailing = /\s|\u00A0$/.test(marqueeText);
@@ -49,6 +51,26 @@ const CurvedLoop = ({
     if (measureRef.current) setSpacing(measureRef.current.getComputedTextLength());
   }, [text, className]);
 
+  const scrollDrivenRef = useRef(scrollDriven);
+
+  useEffect(() => {
+    scrollDrivenRef.current = scrollDriven;
+    if (!scrollDriven || !spacing) return;
+    const onScroll = () => {
+      if (!textPathRef.current) return;
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+      const wrap = spacing;
+      const base = dirRef.current === "right" ? progress * wrap : -progress * wrap;
+      let next = base % wrap;
+      if (next > 0) next -= wrap;
+      textPathRef.current.setAttribute("startOffset", `${next}px`);
+      setOffset(next);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollDriven, spacing]);
+
   useEffect(() => {
     if (!spacing) return;
     if (textPathRef.current) {
@@ -59,7 +81,7 @@ const CurvedLoop = ({
   }, [spacing]);
 
   useEffect(() => {
-    if (!spacing || !ready) return;
+    if (!spacing || !ready || scrollDrivenRef.current) return;
     let frame = 0;
     const step = () => {
       if (!dragRef.current && textPathRef.current) {

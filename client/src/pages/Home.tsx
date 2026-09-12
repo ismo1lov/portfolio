@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import LocomotiveScroll from "locomotive-scroll";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 import CurvedLoop from "../components/CurvedLoop";
+import { CircularGallery, type GalleryItem } from "../components/ui/circular-gallery";
 import DottedSurface from "../components/ui/dotted-surface";
 import {
   ArrowDown,
@@ -15,9 +16,7 @@ import {
   Layers3,
   Linkedin,
   Menu,
-  MoveUpRight,
   Send,
-  Sparkles,
   Twitter,
   X,
 } from "lucide-react";
@@ -33,34 +32,114 @@ const navItems = [
 
 const introWord = "ismo1lov";
 
-const carouselSlides = [
+const workGalleryItems: GalleryItem[] = [
   {
-    image: "/work-stackline.svg",
-    label: "Stackline / 2025",
-    name: <>Stackline<br />in motion.</>,
-    summary: "A fullstack product system where robust backend architecture meets a calm, high-converting interface. Strategy, product design and engineering.",
-    colorClass: "stack-card--ink",
+    common: "Lion",
+    binomial: "Panthera leo",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/ef/ef529e673f5cd10e43948c189473d7f301ebad66d172d891e052db1e3f5cc093.jpg",
+      text: "lion couple kissing on a brown rock",
+      pos: "47% 35%",
+      by: "Clément Roy",
+    },
   },
   {
-    image: "/work-apios.svg",
-    label: "APIOS / 2024",
-    name: <>APIs that<br />scale.</>,
-    summary: "A resilient service layer and calm data experience for a product built to grow from first user to full team.",
-    colorClass: "stack-card--acid",
+    common: "Asiatic elephant",
+    binomial: "Elephas maximus",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/a4/a452d427a19507e4f14d05ca545df406c2304ff3946599b6cfa97dc81c647460.jpg",
+      text: "herd of Sri Lankan elephants walking away from a river",
+      pos: "75% 65%",
+      by: "Alex Azabache",
+    },
   },
   {
-    image: "/work-ilus.svg",
-    label: "KITE / 2024",
-    name: <>Brands with<br />a pulse.</>,
-    summary: "Identity and motion system for a studio that treats every touchpoint as a chance to feel different.",
-    colorClass: "stack-card--paper",
+    common: "Red-tailed black cockatoo",
+    binomial: "Calyptorhynchus banksii",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/ec/ecccd101412d0c0e2865c0a80978192fdf05b738b9a057c4ab1a4cfd84d90cdb.jpg",
+      text: "close-up of a black cockatoo",
+      pos: "53% 43%",
+      by: "David Clode",
+    },
   },
   {
-    image: "/hero-art.svg",
-    label: "NORTH / 2023",
-    name: <>Interfaces<br />that orient.</>,
-    summary: "A web experience rebuilt around wayfinding, editorial rhythm and uncluttered reading for a design office.",
-    colorClass: "stack-card--moss",
+    common: "Dromedary",
+    binomial: "Camelus dromedarius",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/62/62477002d6e425b54d616d138a7b5c862e2bda1dcbd754fee075dbc04fc9d007.jpg",
+      text: "camel and her new born calf walking in the Sahara desert",
+      pos: "65% 65%",
+      by: "Moaz Tobok",
+    },
+  },
+  {
+    common: "Polar bear",
+    binomial: "Ursus maritimus",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/65/65eee6e9e7c2cd4fbb380d712346532109a5d6da513bd835a4c278424589d805.jpg",
+      text: "polar bear on the snow, by the water, raised on the hind legs, front paws together",
+      pos: "50% 25%",
+      by: "Hans-Jurgen Mager",
+    },
+  },
+  {
+    common: "Giant panda",
+    binomial: "Ailuropoda melanoleuca",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/d9/d958dcbb75b0cc4cd2d03578c809614f2c85f06e8573558683cc1f1418596753.jpg",
+      text: "giant panda hanging from a tree branch",
+      pos: "47%",
+      by: "Jiachen Lin",
+    },
+  },
+  {
+    common: "Grévy's zebra",
+    binomial: "Equus grevyi",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/91/91d46e30090f4b1b3ff7705e1029d2fc4f6cb824155b6728d92689d7472d0eed.jpg",
+      text: "zebra standing on wheat field, looking back towards the camera",
+      pos: "65% 35%",
+      by: "Jeff Griffith",
+    },
+  },
+  {
+    common: "Cheetah",
+    binomial: "Acinonyx jubatus",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/00/00c52ec264acae5198946c16870aebab88a2e4b60b504b5aac7e5abe02c4ca63.jpg",
+      text: "cheetah sitting in the grass under a blue sky",
+      by: "Mike Bird",
+    },
+  },
+  {
+    common: "King penguin",
+    binomial: "Aptenodytes patagonicus",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/00/00f92b2eb93c967ad77e3c34dbca897ca08e0eb595b00a82e1db281994f12bff.jpg",
+      text: "king penguin with a fluffy brown chick on grey rocks",
+      pos: "35%",
+      by: "Martin Wettstein",
+    },
+  },
+  {
+    common: "Red panda",
+    binomial: "Ailurus fulgens",
+    url: "https://github.com/ismo1lov",
+    photo: {
+      url: "https://cdn.21st.dev/assets/mirror/da/dab2d7dc03c3c605577e6a8782f1bdb2792b9f41530f34c1cc1ce35ae83c29e9.jpg",
+      text: "a red panda in a tree",
+      by: "Niels Baars",
+    },
   },
 ];
 
@@ -319,7 +398,7 @@ export default function Home() {
         </section>
 
         <div className="ticker reveal" aria-label="Services ticker">
-          <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="left" interactive={false} />
+          <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="left" interactive={false} scrollDriven />
         </div>
 
         <section className="section section-about" id="about">
@@ -370,21 +449,9 @@ export default function Home() {
               <img className="work-illus" src="/work-ilus.svg" alt="Work illustration" />
             </div>
           </div>
-          {carouselSlides.slice(0, 1).map((slide) => (
-            <div key={slide.label} className={`stack-card single ${slide.colorClass}`}>
-              <div className="stack-card-media">
-                <div className="work-code-card" aria-hidden="true"><span className="code-dot" /><span className="code-dot" /><span className="code-dot" /><div className="code-lines"><i /><i /><i /><i /><i /></div><b>ship / stable / 99.9%</b></div>
-                <img src={slide.image} alt={`${slide.label} case study artwork`} />
-                <span className="work-image-label">{slide.label}</span>
-              </div>
-              <div className="stack-card-detail">
-                <div className="work-meta"><span>Featured project</span></div>
-                <h3 className="work-name">{slide.name}</h3>
-                <p className="work-summary">{slide.summary}</p>
-                <a className="work-link" href={`mailto:mirzakarimovrasid@gmail.com?subject=${slide.label.split(" ")[0]}%20case%20study`}>View case study <ArrowUpRight size={16} /></a>
-              </div>
-            </div>
-          ))}
+          <div className="work-gallery reveal">
+            <CircularGallery items={workGalleryItems} radius={470} />
+          </div>
         </section>
 
         <section className="section section-acid" id="notes">
@@ -401,7 +468,7 @@ export default function Home() {
         </section>
 
         <div className="ticker ticker-dark reveal" aria-label="Services ticker">
-          <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="right" interactive={false} />
+          <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="right" interactive={false} scrollDriven />
         </div>
 
         <section className="contact" id="contact">

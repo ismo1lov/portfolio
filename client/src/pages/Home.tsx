@@ -9,7 +9,6 @@ import {
   ArrowUpRight,
   Blocks,
   Code2,
-  Command,
   Facebook,
   Github,
   Instagram,
@@ -17,7 +16,6 @@ import {
   Linkedin,
   Menu,
   MoveUpRight,
-  PenTool,
   Send,
   Sparkles,
   Twitter,
@@ -69,24 +67,24 @@ const carouselSlides = [
 const skills = [
   {
     number: "01",
-    title: "Digital direction",
-    icon: <Command />,
-    text: "I align a brand’s voice, system, and digital experience into one clear point of view.",
-    tags: ["Art direction", "Brand systems", "Strategy"],
+    title: "Frontend Engineering",
+    icon: <Code2 />,
+    text: "I build fast, responsive, and modern web interfaces that deliver seamless user experiences.",
+    tags: ["React.js", "Next.js", "JavaScript"],
   },
   {
     number: "02",
-    title: "Interface design",
-    icon: <PenTool />,
-    text: "I turn complex products into natural, clear, and distinctive interfaces.",
-    tags: ["UX / UI", "Prototyping", "Design systems"],
+    title: "Backend & APIs",
+    icon: <Blocks />,
+    text: "I build robust server-side logic and RESTful APIs to power dynamic and scalable web applications.",
+    tags: ["Node.js", "Express.js", "REST APIs"],
   },
   {
     number: "03",
-    title: "Creative code",
-    icon: <Code2 />,
-    text: "I craft fast, responsive front-end experiences that bring an idea to life on screen.",
-    tags: ["React", "Motion", "Creative dev"],
+    title: "Clean Architecture",
+    icon: <Layers3 />,
+    text: "I apply analytical problem-solving and clean code practices to build optimized web solutions.",
+    tags: ["Git / GitHub", "Optimization", "Clean Code"],
   },
 ];
 
@@ -304,7 +302,7 @@ export default function Home() {
             <div className="eyebrow reveal">Fullstack developer</div>
             <h1 className="hero-title reveal" data-delay="1" id="hero-title">Code that feels <em className="accent">alive.</em></h1>
             <div className="hero-bottom reveal" data-delay="2">
-              <p className="hero-intro">I combine strategy, design, and code to craft digital experiences people remember.</p>
+              <p className="hero-intro">Full-stack developer engineering fast responsive frontend interfaces backed by robust logic.</p>
             </div>
           </div>
           <div className="hero-social" aria-label="Social media links">
@@ -329,10 +327,10 @@ export default function Home() {
             <div className="section-label reveal">A little context</div>
             <div className="about-grid">
               <div className="about-content">
-                <h2 className="about-title reveal" data-reveal="left">Good work sits<br />between <em>logic</em><br />and instinct.</h2>
+                <h2 className="about-title reveal" data-reveal="left">Hi, I’m Abdulloh<br />Ismoilov, a<br /><em>Full-Stack</em> dev.</h2>
                 <div className="about-body reveal" data-delay="1">
-                  <p>As a <strong>creative developer and designer</strong>, I build digital worlds for brands that don’t just look pretty — they feel right.</p>
-                  <p>Every project is a process of asking questions, stripping away what’s unnecessary, and ending up with something that feels just a little more interesting.</p>
+                  <p>I specialize in building fast, responsive frontend interfaces and scalable backend solutions. My real-world experience at Odilsoft allows me to craft digital products that deliver real value.</p>
+                  <p>Combining an Economics background with modern web technology, I bring strong analytical thinking and problem-solving to every project.</p>
                 </div>
               </div>
               <div className="about-image reveal" data-reveal="scale">
@@ -352,12 +350,12 @@ export default function Home() {
             <div className="skills-grid">
               {skills.map((skill, index) => (
                 <article className="skill-card reveal" data-reveal="scale" data-delay={index} key={skill.number}>
-                  <div className="skill-icon">{skill.icon}</div>
-                  <div>
+                  <div className="skill-head">
                     <h2 className="skill-title">{skill.title}</h2>
-                    <p className="skill-desc">{skill.text}</p>
-                    <div className="skill-tags">{skill.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
+                    <div className="skill-icon">{skill.icon}</div>
                   </div>
+                  <p className="skill-desc">{skill.text}</p>
+                  <div className="skill-tags">{skill.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
                 </article>
               ))}
             </div>

@@ -90,12 +90,6 @@ const skills = [
   },
 ];
 
-const miniWork = [
-  ["02 / 2024", "KITE", "Identity / Digital"],
-  ["09 / 2023", "NORTH", "Web experience"],
-  ["04 / 2023", "MELA", "Product direction"],
-];
-
 const tickerServices = ["Fullstack development", "Brand systems", "Backend architecture", "Interaction design", "React / Node.js", "Cloud-ready builds"];
 
 function isDarkBackground(color: string) {
@@ -216,7 +210,7 @@ export default function Home() {
         const rect = workSection.getBoundingClientRect();
         hidden = rect.top < vh && rect.bottom > 0;
       }
-      document.querySelectorAll<HTMLElement>("section, .work-feature").forEach((element) => {
+      document.querySelectorAll<HTMLElement>("section, .work-feature, .stack-card").forEach((element) => {
         const rect = element.getBoundingClientRect();
         if (rect.top <= 84 && rect.bottom >= 84) {
           dark = isDarkBackground(getComputedStyle(element).backgroundColor);
@@ -264,14 +258,15 @@ export default function Home() {
 
   const handleNav = (id: string) => {
     setMenuOpen(false);
+    const ease = (t: number) => 1 - Math.pow(1 - t, 4);
     if (id === "top") {
-      scrollRef.current?.scrollTo(0, { duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 4) });
+      if (scrollRef.current) scrollRef.current.scrollTo(0, { duration: 1.2, easing: ease });
+      else window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      scrollRef.current?.scrollTo(`#${id}`, {
-        offset: 0,
-        duration: 1.2,
-        easing: (t) => 1 - Math.pow(1 - t, 4),
-      });
+      const section = document.getElementById(id);
+      if (!section) return;
+      if (scrollRef.current) scrollRef.current.scrollTo(`#${id}`, { offset: 0, duration: 1.2, easing: ease });
+      else section.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -344,7 +339,7 @@ export default function Home() {
                 <div className="about-float">
                   <img src="/about-image.png" alt="Abstract developer portrait" />
                 </div>
-                <a className="about-corner about-corner-top" href="mailto:mirzakarimovrasid@gmail.com" aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
+                <a className="about-corner about-corner-top" href="#contact" onClick={(event) => { event.preventDefault(); handleNav("contact"); }} aria-label="Contact"><span className="about-corner-label">Contact</span><ArrowRight size={16} /></a>
                 <a className="about-corner about-corner-bottom" href="/Ismoilov%20Abdulloh.pdf" target="_blank" rel="noreferrer" aria-label="Download CV"><span className="about-corner-label">Download CV</span><ArrowRight size={16} /></a>
               </div>
             </div>
@@ -392,11 +387,6 @@ export default function Home() {
               </div>
             </div>
           ))}
-          <div className="section-frame">
-            <div className="work-list">
-              {miniWork.map(([date, title, kind], index) => <a className="work-mini reveal" data-reveal="up" data-delay={index} href="mailto:mirzakarimovrasid@gmail.com" key={title}><small>{date}</small><h3>{title}</h3><p>{kind} <ArrowUpRight size={13} style={{ verticalAlign: "middle" }} /></p></a>)}
-            </div>
-          </div>
         </section>
 
         <section className="section section-acid" id="notes">

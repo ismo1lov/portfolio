@@ -35,6 +35,7 @@ const introWord = "ismo1lov";
 const workGalleryItems: GalleryItem[] = [
   {
     common: "lumina",
+    url: "https://luminahome2.netlify.app/",
     photo: {
       url: "/projects-img/lumina.jpg",
       text: "lumina",
@@ -42,6 +43,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "feyza",
+    url: "https://feyzaura.netlify.app/",
     photo: {
       url: "/projects-img/feyza.jpg",
       text: "feyza",
@@ -49,6 +51,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "hrbpa",
+    url: "https://hrbpa.netlify.app/en",
     photo: {
       url: "/projects-img/hrbpa.png",
       text: "hrbpa",
@@ -56,6 +59,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "finway",
+    url: "https://finwayuz.netlify.app/",
     photo: {
       url: "/projects-img/finwayjpg.jpg",
       text: "finway",
@@ -63,6 +67,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "bonitokids",
+    url: "https://bonito.odilteam.uz/",
     photo: {
       url: "/projects-img/bonitokids.jpg",
       text: "bonitokids",
@@ -70,6 +75,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "lumina",
+    url: "https://luminahome2.netlify.app/",
     photo: {
       url: "/projects-img/lumina.jpg",
       text: "lumina",
@@ -77,6 +83,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "feyza",
+    url: "https://feyzaura.netlify.app/",
     photo: {
       url: "/projects-img/feyza.jpg",
       text: "feyza",
@@ -84,6 +91,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "hrbpa",
+    url: "https://hrbpa.netlify.app/en",
     photo: {
       url: "/projects-img/hrbpa.png",
       text: "hrbpa",
@@ -91,6 +99,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "finway",
+    url: "https://finwayuz.netlify.app/",
     photo: {
       url: "/projects-img/finwayjpg.jpg",
       text: "finway",
@@ -98,6 +107,7 @@ const workGalleryItems: GalleryItem[] = [
   },
   {
     common: "bonitokids",
+    url: "https://bonito.odilteam.uz/",
     photo: {
       url: "/projects-img/bonitokids.jpg",
       text: "bonitokids",

@@ -200,6 +200,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
                       draggable={false}
                       onDragStart={(event) => event.preventDefault()}
                       onClick={handleCardClick}
+                      onPointerDown={(e) => e.stopPropagation()}
                       className="circular-gallery-link absolute bottom-5 right-5 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-[#b8f230] text-[#20221f] shadow-lg transition-transform duration-300 hover:scale-110"
                     >
                       <ArrowUpRight size={20} />

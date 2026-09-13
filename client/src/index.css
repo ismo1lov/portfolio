@@ -1239,11 +1239,6 @@ textarea,
   align-items: center;
   justify-content: center;
   padding: 0 24px;
-  background:
-    radial-gradient(900px circle at 85% 20%, rgba(184, 242, 48, .32), transparent 60%),
-    radial-gradient(700px circle at 8% 90%, rgba(184, 242, 48, .2), transparent 55%),
-    linear-gradient(135deg, #20221f, #161a15 60%, #232b14);
-  border-radius: 40px;
 }
 
 @media (max-width: 900px) {

@@ -4,13 +4,13 @@ import { cn } from "@/lib/utils";
 
 export interface GalleryItem {
   common: string;
-  binomial: string;
+  binomial?: string;
   url?: string;
   photo: {
     url: string;
     text: string;
     pos?: string;
-    by: string;
+    by?: string;
   };
 }
 
@@ -26,6 +26,8 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
     const [dragging, setDragging] = useState(false);
     const rotationRef = useRef(0);
     const scrollRef = useRef(false);
+    const scrollBaseRef = useRef(0);
+    const manualOffsetRef = useRef(0);
     const scrollTimeoutRef = useRef<number | null>(null);
     const animationFrameRef = useRef<number | null>(null);
     const dragStartRef = useRef({ x: 0, base: 0, active: false });
@@ -39,6 +41,10 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       setRotation(next);
     };
 
+    const syncManualOffset = () => {
+      manualOffsetRef.current = rotationRef.current - scrollBaseRef.current;
+    };
+
     useEffect(() => {
       const handleScroll = () => {
         scrollRef.current = true;
@@ -46,7 +52,8 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
 
         const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight;
         const scrollProgress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
-        updateRotation(scrollProgress * 360);
+        scrollBaseRef.current = scrollProgress * 360;
+        updateRotation(scrollBaseRef.current + manualOffsetRef.current);
 
         scrollTimeoutRef.current = window.setTimeout(() => {
           scrollRef.current = false;
@@ -64,10 +71,12 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       const autoRotate = () => {
         if (inertiaRef.current !== 0) {
           updateRotation(rotationRef.current + inertiaRef.current);
+          syncManualOffset();
           inertiaRef.current *= 0.93;
           if (Math.abs(inertiaRef.current) < 0.03) inertiaRef.current = 0;
         } else if (!scrollRef.current && !dragStartRef.current.active) {
           updateRotation(rotationRef.current + autoRotateSpeed);
+          syncManualOffset();
         }
         animationFrameRef.current = requestAnimationFrame(autoRotate);
       };
@@ -97,6 +106,7 @@ const CircularGallery = React.forwardRef<HTMLDivElement, CircularGalleryProps>(
       lastPointerRef.current = { x: event.clientX, t: now };
       const delta = event.clientX - dragStartRef.current.x;
       updateRotation(dragStartRef.current.base + delta * 0.25);
+      syncManualOffset();
     };
 
     const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {

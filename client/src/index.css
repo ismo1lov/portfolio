@@ -1231,14 +1231,27 @@ textarea,
 
 .work-gallery {
   width: min(100% - 48px, 1320px);
-  height: clamp(380px, 64vh, 640px);
+  height: clamp(460px, 80vh, 720px);
   margin: 56px auto 0;
   position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 24px;
+}
+
+#work {
+  padding-bottom: 0;
+}
+
+.circular-gallery-item {
+  top: calc(50% - 30px) !important;
+}
+
+.circular-gallery-item > div {
+  box-shadow:
+    0 25px 60px -8px rgba(0, 0, 0, 0.22),
+    0 12px 28px -6px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 900px) {

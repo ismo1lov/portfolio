@@ -165,9 +165,23 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
   const [particleColor, setParticleColor] = useState<[number, number, number]>([200, 200, 200]);
   const [particleHidden, setParticleHidden] = useState(false);
+  const [galleryRadius, setGalleryRadius] = useState(470);
   const particleColorRef = useRef(particleColor);
   const particleHiddenRef = useRef(particleHidden);
   const scrollRef = useRef<LocomotiveScroll | null>(null);
+
+  useEffect(() => {
+    const computeRadius = () => {
+      const w = window.innerWidth;
+      if (w <= 520) return 250;
+      if (w <= 767) return 330;
+      return 470;
+    };
+    const update = () => setGalleryRadius(computeRadius());
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   useEffect(() => {
     const floatEl = document.querySelector<HTMLElement>(".about-float");
@@ -195,19 +209,22 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const locomotive = new LocomotiveScroll({
-      lenisOptions: {
-        smoothWheel: true,
-        lerp: 0.1,
-      },
-    });
+    const isMobile = window.innerWidth <= 767;
+    const locomotive = isMobile
+      ? null
+      : new LocomotiveScroll({
+          lenisOptions: {
+            smoothWheel: true,
+            lerp: 0.1,
+          },
+        });
     scrollRef.current = locomotive;
 
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
-    locomotive.scrollTo(0, { duration: 0 });
+    locomotive?.scrollTo(0, { duration: 0 });
 
     let exitTimer: number | undefined;
     let doneTimer: number | undefined;
@@ -300,7 +317,7 @@ export default function Home() {
       window.removeEventListener("keydown", onRefreshKeyDown);
       revealObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
-      locomotive.destroy();
+      locomotive?.destroy();
       scrollRef.current = null;
     };
   }, []);
@@ -422,7 +439,7 @@ export default function Home() {
             </div>
           </div>
           <div className="work-gallery reveal">
-            <CircularGallery items={workGalleryItems} radius={470} />
+            <CircularGallery items={workGalleryItems} radius={galleryRadius} />
           </div>
         </section>
 

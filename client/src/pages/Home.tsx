@@ -15,7 +15,9 @@ import {
   Instagram,
   Layers3,
   Linkedin,
+  Mail,
   Menu,
+  Phone,
   Send,
   Twitter,
   X,
@@ -173,8 +175,8 @@ export default function Home() {
   useEffect(() => {
     const computeRadius = () => {
       const w = window.innerWidth;
-      if (w <= 520) return 250;
-      if (w <= 767) return 330;
+      if (w <= 520) return 340;
+      if (w <= 767) return 420;
       return 470;
     };
     const update = () => setGalleryRadius(computeRadius());
@@ -258,12 +260,6 @@ export default function Home() {
       refreshTimer = window.setTimeout(() => window.location.reload(), 400);
     };
     window.addEventListener("keydown", onRefreshKeyDown);
-    const revealObserver = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("is-visible")),
-      { threshold: 0.14 },
-    );
-    document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
-
     const onScroll = () => {
       setScrolled(window.scrollY > 70);
       let dark = false;
@@ -275,6 +271,11 @@ export default function Home() {
       if (workSection) {
         const rect = workSection.getBoundingClientRect();
         hidden = rect.top < vh && rect.bottom > 0;
+      }
+      const footerSection = document.querySelector(".site-footer");
+      if (footerSection) {
+        const rect = footerSection.getBoundingClientRect();
+        if (rect.top < vh && rect.bottom > 0) hidden = true;
       }
       document.querySelectorAll<HTMLElement>("section, .work-feature, .stack-card").forEach((element) => {
         const rect = element.getBoundingClientRect();
@@ -315,7 +316,6 @@ export default function Home() {
       if (doneTimer) window.clearTimeout(doneTimer);
       if (refreshTimer) window.clearTimeout(refreshTimer);
       window.removeEventListener("keydown", onRefreshKeyDown);
-      revealObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
       locomotive?.destroy();
       scrollRef.current = null;
@@ -367,9 +367,9 @@ export default function Home() {
           <DottedSurface size={8} opacity={0.8} sizeAttenuation vertexColors particleColor={particleColor} hidden={particleHidden} aria-hidden="true" />
           <div className="hero-art" aria-hidden="true" />
           <div className="page-frame hero-copy">
-            <div className="eyebrow reveal">Fullstack developer</div>
-            <h1 className="hero-title reveal" data-delay="1" id="hero-title">Code that feels <em className="accent">alive.</em></h1>
-            <div className="hero-bottom reveal" data-delay="2">
+            <div className="eyebrow">Fullstack developer</div>
+            <h1 className="hero-title" id="hero-title">Code that feels <em className="accent">alive.</em></h1>
+            <div className="hero-bottom">
               <p className="hero-intro">Full-stack developer engineering fast responsive frontend interfaces backed by robust logic.</p>
             </div>
           </div>
@@ -386,22 +386,22 @@ export default function Home() {
           <div className="scroll-cue"><span /> Scroll to explore <ArrowDown size={13} /></div>
         </section>
 
-        <div className="ticker reveal" aria-label="Services ticker">
+        <div className="ticker" aria-label="Services ticker">
           <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="left" interactive={false} scrollDriven />
         </div>
 
         <section className="section section-about" id="about">
           <div className="section-frame">
-            <div className="section-label reveal">A little context</div>
+            <div className="section-label">A little context</div>
             <div className="about-grid">
               <div className="about-content">
-                <h2 className="about-title reveal" data-reveal="left">Hi, I’m Abdulloh<br />Ismoilov, a<br /><em>Full-Stack</em> dev.</h2>
-                <div className="about-body reveal" data-delay="1">
+                <h2 className="about-title">Hi, I’m Abdulloh<br />Ismoilov, a<br /><em>Full-Stack</em> dev.</h2>
+                <div className="about-body">
                   <p>I specialize in building fast, responsive frontend interfaces and scalable backend solutions. My real-world experience at Odilsoft allows me to craft digital products that deliver real value.</p>
                   <p>Combining an Economics background with modern web technology, I bring strong analytical thinking and problem-solving to every project.</p>
                 </div>
               </div>
-              <div className="about-image reveal" data-reveal="scale">
+              <div className="about-image">
                 <div className="about-float">
                   <img src="/about-image.png" alt="Abstract developer portrait" />
                 </div>
@@ -414,10 +414,10 @@ export default function Home() {
 
         <section className="section section-dark" id="skills">
           <div className="section-frame">
-            <div className="section-label reveal">What I bring</div>
+            <div className="section-label">What I bring</div>
             <div className="skills-grid">
-              {skills.map((skill, index) => (
-                <article className="skill-card reveal" data-reveal="scale" data-delay={index} key={skill.number}>
+              {skills.map((skill) => (
+                <article className="skill-card" key={skill.number}>
                   <div className="skill-head">
                     <h2 className="skill-title">{skill.title}</h2>
                     <div className="skill-icon">{skill.icon}</div>
@@ -432,23 +432,23 @@ export default function Home() {
 
         <section className="section" id="work">
           <div className="section-frame">
-            <div className="section-label reveal">Selected work</div>
-            <div className="work-header reveal">
+            <div className="section-label">Selected work</div>
+            <div className="work-header">
               <h2 className="work-title">A few things<br />I’ve made <em>recently.</em></h2>
               <img className="work-illus" src="/work-ilus.svg" alt="Work illustration" />
             </div>
           </div>
-          <div className="work-gallery reveal">
+          <div className="work-gallery">
             <CircularGallery items={workGalleryItems} radius={galleryRadius} />
           </div>
         </section>
 
         <section className="section section-acid" id="notes">
           <div className="section-frame">
-            <div className="section-label reveal">A note from the process</div>
+            <div className="section-label">A note from the process</div>
             <div className="note-wrap">
-              <span className="note-mark reveal" data-reveal="scale" aria-hidden="true">“</span>
-              <blockquote className="note-quote reveal" data-reveal="fade">
+              <span className="note-mark" aria-hidden="true">“</span>
+              <blockquote className="note-quote">
                 <p>Beautiful design is not decoration — it’s the <em>quiet signal</em> that shows people their next step with confidence.</p>
                 <cite>— A working principle, not a slogan</cite>
               </blockquote>
@@ -456,16 +456,16 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="ticker ticker-dark reveal" aria-label="Services ticker">
+        <div className="ticker ticker-dark" aria-label="Services ticker">
           <CurvedLoop marqueeText={`${tickerServices.join(" ✦ ")} ✦`} curveAmount={0} speed={1} direction="right" interactive={false} scrollDriven />
         </div>
 
         <section className="contact" id="contact">
           <div className="section-frame">
-            <div className="section-label reveal">Start a conversation</div>
+            <div className="section-label">Start a conversation</div>
             <div className="contact-top">
-              <h2 className="contact-title reveal" data-reveal="scale">Have a good<br /><span>idea?</span></h2>
-              <form className="contact-form reveal" data-reveal="right" onSubmit={handleContactSubmit}>
+              <h2 className="contact-title">Have a good<br /><span>idea?</span></h2>
+              <form className="contact-form" onSubmit={handleContactSubmit}>
                 <div className="contact-field">
                   <label htmlFor="contact-name">Your name</label>
                   <input id="contact-name" name="name" type="text" placeholder="Jane Doe" autoComplete="name" required />
@@ -487,7 +487,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <footer className="site-footer reveal" data-reveal="fade">
+        <footer className="site-footer">
           <div className="section-frame">
             <div className="footer-main">
               <div className="footer-brand">
@@ -496,18 +496,20 @@ export default function Home() {
                 </a>
                 <p className="footer-tagline">Fullstack developer crafting calm, deliberate digital products. Let’s build something good together.</p>
               </div>
-              <div className="footer-socials" aria-label="Social media links">
-                <a href="https://github.com/ismo1lov" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={20} /></a>
-                <a href="https://t.me/AbdullohIsmoilov" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={20} /></a>
-                <a href="https://www.linkedin.com/in/ismo1lov" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
-                <a href="https://www.instagram.com/ismo1lovabdulloh/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
-                <a href="https://www.facebook.com/profile.php?id=61555173012563" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={20} /></a>
-                <a href="https://x.com/RaidMirzak83586" target="_blank" rel="noreferrer" aria-label="X"><Twitter size={20} /></a>
+              <div className="footer-right">
+                <div className="footer-socials" aria-label="Social media links">
+                  <a href="https://github.com/ismo1lov" target="_blank" rel="noreferrer" aria-label="GitHub"><Github size={20} /></a>
+                  <a href="https://t.me/AbdullohIsmoilov" target="_blank" rel="noreferrer" aria-label="Telegram"><Send size={20} /></a>
+                  <a href="https://www.linkedin.com/in/ismo1lov" target="_blank" rel="noreferrer" aria-label="LinkedIn"><Linkedin size={20} /></a>
+                  <a href="https://www.instagram.com/ismo1lovabdulloh/" target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram size={20} /></a>
+                  <a href="https://www.facebook.com/profile.php?id=61555173012563" target="_blank" rel="noreferrer" aria-label="Facebook"><Facebook size={20} /></a>
+                  <a href="https://x.com/RaidMirzak83586" target="_blank" rel="noreferrer" aria-label="X"><Twitter size={20} /></a>
+                </div>
+                <div className="footer-contact">
+                  <a href="tel:+998977318666" aria-label="Call"><Phone size={15} /> tel: +998 97 731 86 66</a>
+                  <a href="mailto:mirzakarimovrasid@gmail.com" aria-label="Email"><Mail size={15} /> mirzakarimovrasid@gmail.com</a>
+                </div>
               </div>
-            </div>
-            <div className="footer-contact">
-              <a href="tel:+998977318666" aria-label="Call">tel: +998 97 731 86 66</a>
-              <a href="mailto:mirzakarimovrasid@gmail.com" aria-label="Email">mirzakarimovrasid@gmail.com</a>
             </div>
             <div className="footer-bottom">
               <span>© 2026 &lt;ismo1lov/&gt; / Made with intent.</span>

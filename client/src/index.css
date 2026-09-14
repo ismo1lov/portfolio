@@ -822,6 +822,8 @@ textarea,
 }
 
 .ticker {
+  position: relative;
+  z-index: 1;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
   overflow: hidden;
@@ -2078,9 +2080,9 @@ textarea,
   }
 
   .hero {
-    height: auto;
+    height: 100svh;
+    min-height: 100svh;
     padding: 130px 0 46px;
-    min-height: 800px;
   }
 
   .hero-copy {
@@ -2199,8 +2201,8 @@ textarea,
   }
 
   .hero {
-    height: auto;
-    min-height: 720px;
+    height: 100svh;
+    min-height: 100svh;
     padding-bottom: 35px;
   }
 

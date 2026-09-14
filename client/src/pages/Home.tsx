@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import LocomotiveScroll from "locomotive-scroll";
 import "locomotive-scroll/dist/locomotive-scroll.css";
 import CurvedLoop from "../components/CurvedLoop";
@@ -153,6 +153,10 @@ function isDarkBackground(color: string) {
 }
 
 export default function Home() {
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const isReload =
     typeof window !== "undefined" &&
     (window.performance?.getEntriesByType?.("navigation")?.[0] as PerformanceNavigationTiming | undefined)?.type ===
@@ -225,7 +229,6 @@ export default function Home() {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
-    window.scrollTo(0, 0);
     locomotive?.scrollTo(0, { duration: 0 });
 
     let exitTimer: number | undefined;
@@ -265,18 +268,15 @@ export default function Home() {
       let dark = false;
       let hidden = false;
       const probe = window.scrollY + window.innerHeight * 0.3;
+      const centerX = window.innerWidth / 2;
       const centerY = window.innerHeight / 2;
-      const vh = window.innerHeight;
-      const workSection = document.getElementById("work");
-      if (workSection) {
-        const rect = workSection.getBoundingClientRect();
-        hidden = rect.top < vh && rect.bottom > 0;
-      }
-      const footerSection = document.querySelector(".site-footer");
-      if (footerSection) {
-        const rect = footerSection.getBoundingClientRect();
-        if (rect.top < vh && rect.bottom > 0) hidden = true;
-      }
+      const centerEl = document.elementFromPoint(centerX, centerY);
+      const allowedSections = document.querySelectorAll("#about, #contact, .hero");
+      let isInAllowed = false;
+      allowedSections.forEach((section) => {
+        if (section.contains(centerEl)) isInAllowed = true;
+      });
+      hidden = !isInAllowed;
       document.querySelectorAll<HTMLElement>("section, .work-feature, .stack-card").forEach((element) => {
         const rect = element.getBoundingClientRect();
         if (rect.top <= 84 && rect.bottom >= 84) {
